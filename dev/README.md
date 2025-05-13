@@ -1,0 +1,1 @@
+navodila za zagon in vzpovstavitev sistema

@@ -34,6 +34,15 @@ export const BookInfo: React.FC<BookInfoProps> = ({ book }) => {
           </div>
         )}
       </div>
+
+      <div className="relative w-full h-64">
+        <img 
+          src={book.coverUrl} 
+          alt={`${book.title} - naslovnica`}
+          className="w-full h-full object-cover rounded-lg"
+          loading="lazy"
+        />
+      </div>
       
       {book.cobissUrl && (
         <div className="pt-2">

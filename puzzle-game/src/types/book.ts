@@ -1,6 +1,6 @@
 
 export interface BookCover {
-  id: string;
+  id?: string;
   title: string;
   author: string;
   coverUrl: string;

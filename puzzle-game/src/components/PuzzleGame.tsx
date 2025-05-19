@@ -124,6 +124,42 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     }
   };
 
+  // premik z misko
+  const handleDragMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    if (draggingPiece !== null) {
+      const containerRect = containerRef.current!.getBoundingClientRect();
+
+      // upravljanje mouse eventov
+      if ('clientX' in e) {
+        const x = e.clientX - containerRect.left - dragOffset.x;
+        const y = e.clientY - containerRect.top - dragOffset.y;
+
+        setPieces(prev => prev.map(piece => {
+          if (piece.id === draggingPiece) {
+            const boundedX = Math.min(Math.max(0, x), containerSize.width - pieceSize.width);
+            const boundedY = Math.min(Math.max(0, y), containerSize.height - pieceSize.height);
+            return { ...piece, x: boundedX, y: boundedY };
+          }
+          return piece;
+        }));
+      }
+      // upravljanje touch eventov
+      else if ('touches' in e) {
+        const x = e.touches[0].clientX - containerRect.left - dragOffset.x;
+        const y = e.touches[0].clientY - containerRect.top - dragOffset.y;
+
+        setPieces(prev => prev.map(piece => {
+          if (piece.id === draggingPiece) {
+            const boundedX = Math.min(Math.max(0, x), containerSize.width - pieceSize.width);
+            const boundedY = Math.min(Math.max(0, y), containerSize.height - pieceSize.height);
+            return { ...piece, x: boundedX, y: boundedY };
+          }
+          return piece;
+        }));
+      }
+    }
+  };
+
   return (
     <div className="flex justify-center">
       <div 

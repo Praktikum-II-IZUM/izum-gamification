@@ -32,6 +32,31 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [isComplete, setIsComplete] = useState(false);
 
 
+  // konec premika miske in preverjanje ce je pozicija ok
+  const handleDragEnd = () => {
+    if (draggingPiece !== null) {
+      setPieces(prev => prev.map(piece => {
+        if (piece.id === draggingPiece) {
+          const isCloseX = Math.abs(piece.x - piece.correctX) < pieceSize.width * 0.15;
+          const isCloseY = Math.abs(piece.y - piece.correctY) < pieceSize.height * 0.15;
+          
+          if (isCloseX && isCloseY) {
+            return {
+              ...piece,
+              x: piece.correctX,
+              y: piece.correctY,
+              isCorrect: true
+            };
+          }
+          return { ...piece, isCorrect: false };
+        }
+        return piece;
+      }));
+      
+      setDraggingPiece(null);
+    }
+  };
+
   return (
     <div className="flex justify-center">
       <div 

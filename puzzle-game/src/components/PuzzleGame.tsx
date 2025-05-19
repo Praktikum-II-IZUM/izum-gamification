@@ -31,6 +31,134 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [pieceSize, setPieceSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [isComplete, setIsComplete] = useState(false);
 
+  // velikost puzzla in listenerji
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => initGame();  //ko se nalozi sliko se lahko starta igra
+    img.src = imageSrc;
+    
+    // za responsive posodabljanje velikosti puzzlov ko se resiza okno
+    const updateContainerSize = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        setContainerSize({ width, height });
+      }
+    };
+    
+    updateContainerSize();
+    window.addEventListener('resize', updateContainerSize);
+    return () => window.removeEventListener('resize', updateContainerSize);
+  }, [imageSrc]);
+  
+  useEffect(() => {
+    if (containerSize.width > 0) initGame();
+  }, [containerSize, rows, cols]);
+
+  useEffect(() => {
+    if (pieces.length && pieces.every(piece => piece.isCorrect) && !isComplete) {
+      setIsComplete(true);
+      onComplete();
+    }
+  }, [pieces, isComplete, onComplete]);
+
+  // inicializacija zacetek igre
+  const initGame = () => {
+    if (!containerRef.current || containerSize.width === 0) return;
+    
+    const pieceWidth = containerSize.width / cols;
+    const pieceHeight = containerSize.height / rows;
+    setPieceSize({ width: pieceWidth, height: pieceHeight });
+    
+    const newPieces: PuzzlePiece[] = [];
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const id = row * cols + col;
+        const correctX = col * pieceWidth;
+        const correctY = row * pieceHeight;
+        
+        newPieces.push({
+          id,
+          x: Math.random() * (containerSize.width - pieceWidth),
+          y: Math.random() * (containerSize.height - pieceHeight),
+          correctX,
+          correctY,
+          // rotation: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
+          isCorrect: false
+        });
+      }
+    }
+    
+    setPieces(newPieces);
+    setIsComplete(false);
+  };
+
+  // zacetek premik z misko
+  const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, id: number) => {
+    
+    const piece = pieces.find(p => p.id === id);
+    if (piece) {
+      const rect = (e.target as HTMLElement).getBoundingClientRect();
+      
+      // upravljanje mouse eventov
+      if ('clientX' in e) {
+        setDragOffset({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        });
+      }
+      // upravljanje touch eventov
+      else if ('touches' in e) {
+        setDragOffset({
+          x: e.touches[0].clientX - rect.left,
+          y: e.touches[0].clientY - rect.top
+        });
+      }
+
+      /*Offset je pomemben zato, ker:
+      - Drži relativno pozicijo miške glede na container.
+      - Poskrbi, da container ostane pod miško tudi, ko ga premikamo.
+      - Poskrbi za gladko premikanje brez skakanja container. */
+      
+      setDraggingPiece(id);
+      setPieces(prev => [...prev.filter(p => p.id !== id), piece]);
+    }
+  };
+
+  // premik z misko
+  const handleDragMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    if (draggingPiece !== null) {
+      const containerRect = containerRef.current!.getBoundingClientRect();
+
+      // upravljanje mouse eventov
+      if ('clientX' in e) {
+        const x = e.clientX - containerRect.left - dragOffset.x;
+        const y = e.clientY - containerRect.top - dragOffset.y;
+
+        setPieces(prev => prev.map(piece => {
+          if (piece.id === draggingPiece) {
+            const boundedX = Math.min(Math.max(0, x), containerSize.width - pieceSize.width);
+            const boundedY = Math.min(Math.max(0, y), containerSize.height - pieceSize.height);
+            return { ...piece, x: boundedX, y: boundedY };
+          }
+          return piece;
+        }));
+      }
+      // upravljanje touch eventov
+      else if ('touches' in e) {
+        const x = e.touches[0].clientX - containerRect.left - dragOffset.x;
+        const y = e.touches[0].clientY - containerRect.top - dragOffset.y;
+
+        setPieces(prev => prev.map(piece => {
+          if (piece.id === draggingPiece) {
+            const boundedX = Math.min(Math.max(0, x), containerSize.width - pieceSize.width);
+            const boundedY = Math.min(Math.max(0, y), containerSize.height - pieceSize.height);
+            return { ...piece, x: boundedX, y: boundedY };
+          }
+          return piece;
+        }));
+      }
+    }
+  };
 
   // konec premika miske in preverjanje ce je pozicija ok
   const handleDragEnd = () => {

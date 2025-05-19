@@ -54,10 +54,10 @@ export default function Home() {
             </Button>
             {gameStarted && (
               <PuzzleGame 
-                coverUrl={currentBook?.coverUrl || ''}
-                cols={2}
+                imageSrc={currentBook?.coverUrl || ''}
                 rows={2}
-                onGameComplete={() => setGameCompleted(true)}
+                cols={2}
+                onComplete={() => setGameCompleted(true)}
               />
             )}
           </div>

@@ -21,3 +21,19 @@ Aplikacija je namenjena zabavi in učenju – uporabniki lahko ob iskanju knjig 
 
 ## Tehnologije
 
+Aplikacija je razvita z uporabo sodobnih tehnologij in orodij:
+
+- **Frontend**: 
+  - Next.js (React framework)
+  - TypeScript
+  - Tailwind CSS za oblikovanje
+  - Radix UI komponente
+
+- **Backend**:
+  - Next.js API Routes
+  - MongoDB za shranjevanje podatkov
+
+- **Orodja za razvoj**:
+  - Node.js
+  - Docker za virtualizacijo
+  - Git za različice kode

@@ -17,15 +17,15 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({ coverUrl, cols, rows, on
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-1">
+    <div className={`grid grid-cols-${cols} gap-1`}>
       {pieces.map(piece => (
         <div 
           key={piece.id}
           className="relative aspect-square"
           style={{
             backgroundImage: `url(${coverUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: `-${piece.x * 50}% -${piece.y * 50}%`
+            backgroundSize: `${cols * 100}% ${rows * 100}%`,
+            backgroundPosition: `-${piece.x * 100}% -${piece.y * 100}%`
           }}
         />
       ))}

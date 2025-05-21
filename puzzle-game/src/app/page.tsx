@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PuzzleGame } from '@/components/PuzzleGame';
 import { BookInfo } from '@/components/BookInfo';
-import { Trophy, BookOpen } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
 
 export default function Home() {
   const [currentBook, setCurrentBook] = useState<BookCover | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
-  const [gameCompleted, setGameCompleted] = useState(false);
+  const [_gameCompleted, setGameCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ import { BookCover } from '@/types/book';
 export default function Home() {
   const [currentBook, setCurrentBook] = useState<BookCover | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
-  const [_gameCompleted, setGameCompleted] = useState(false);
+  //const [_gameCompleted, setGameCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function Home() {
                 imageSrc={currentBook?.coverUrl || ''}
                 rows={2}
                 cols={2}
-                onComplete={() => setGameCompleted(true)}
+                onComplete={() => {}}
               />
             )}
           </div>

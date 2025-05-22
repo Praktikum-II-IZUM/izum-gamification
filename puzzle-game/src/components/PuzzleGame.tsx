@@ -7,6 +7,7 @@ interface PuzzlePiece {
   y: number;
   correctX: number;
   correctY: number;
+  rotation: number;
   isCorrect: boolean;
 }
 
@@ -30,6 +31,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [containerSize, setContainerSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [pieceSize, setPieceSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [isComplete, setIsComplete] = useState(false);
+  const [isRotating, setIsRotating] = useState(false);
 
   // velikost puzzla in listenerji
   useEffect(() => {
@@ -82,7 +84,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
           y: Math.random() * (containerSize.height - pieceHeight),
           correctX,
           correctY,
-          // rotation: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
+          rotation: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
           isCorrect: false
         });
       }
@@ -94,7 +96,8 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
   // zacetek premik z misko
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, id: number) => {
-    
+    if (isRotating) return;
+
     const piece = pieces.find(p => p.id === id);
     if (piece) {
       const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -167,12 +170,14 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         if (piece.id === draggingPiece) {
           const isCloseX = Math.abs(piece.x - piece.correctX) < pieceSize.width * 0.15;
           const isCloseY = Math.abs(piece.y - piece.correctY) < pieceSize.height * 0.15;
+          const isCorrectRotation = piece.rotation % 360 === 0;
           
-          if (isCloseX && isCloseY) {
+          if (isCloseX && isCloseY && isCorrectRotation) {
             return {
               ...piece,
               x: piece.correctX,
               y: piece.correctY,
+              rotation: 0,
               isCorrect: true
             };
           }
@@ -182,6 +187,57 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       }));
       
       setDraggingPiece(null);
+    }
+  };
+
+  // rotacija puzzla
+  const rotatePiece = (id: number) => {
+    setIsRotating(true);
+    
+    setPieces(prev => prev.map(piece => {
+      if (piece.id === id) {
+        return { ...piece, rotation: (piece.rotation + 90) % 360, isCorrect: false };
+      }
+      return piece;
+    }));
+    
+    setTimeout(() => {
+      setIsRotating(false);
+      
+      setPieces(prev => prev.map(piece => {
+        if (piece.id === id) {
+          const isCloseX = Math.abs(piece.x - piece.correctX) < pieceSize.width * 0.15;
+          const isCloseY = Math.abs(piece.y - piece.correctY) < pieceSize.height * 0.15;
+          const isCorrectRotation = piece.rotation % 360 === 0;
+          
+          if (isCloseX && isCloseY && isCorrectRotation) {
+            return {
+              ...piece,
+              x: piece.correctX,
+              y: piece.correctY,
+              rotation: 0,
+              isCorrect: true
+            };
+          }
+        }
+        return piece;
+      }));
+    }, 300);
+  };
+
+  // dvojni-tap za rotacijo
+  const lastTapRef = useRef<{ id: number; time: number } | null>(null);
+  const handleTap = (e: React.TouchEvent<HTMLDivElement>, id: number) => {
+    e.preventDefault();
+    const now = new Date().getTime();
+    
+    if (lastTapRef.current && 
+        lastTapRef.current.id === id && 
+        now - lastTapRef.current.time < 300) {
+      rotatePiece(id);
+      lastTapRef.current = null;
+    } else {
+      lastTapRef.current = { id, time: now };
     }
   };
 
@@ -221,10 +277,13 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
               left: `${piece.x}px`,
               top: `${piece.y}px`,
               zIndex: draggingPiece === piece.id ? 10 : 1,
+              transform: `rotate(${piece.rotation}deg)`,
               touchAction: "none"
             }}
             onMouseDown={(e) => handleDragStart(e, piece.id)}
             onTouchStart={(e) => handleDragStart(e, piece.id)}
+            onDoubleClick={(e) => rotatePiece(piece.id)}
+            onTouchEnd={(e) => handleTap(e, piece.id)}
           >
             {/* ce uspesno puzzle na pravi lokaciji zelen rob */}
             <div 

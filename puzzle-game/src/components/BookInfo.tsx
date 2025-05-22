@@ -35,7 +35,7 @@ export const BookInfo: React.FC<BookInfoProps> = ({ book }) => {
         )}
       </div>
 
-      <div className="relative w-full h-64">
+      <div className="relative w-full">
         <img 
           src={book.coverUrl} 
           alt={`${book.title} - naslovnica`}

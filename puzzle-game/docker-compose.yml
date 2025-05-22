@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      #- MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/puzzle-game?retryWrites=true&w=majority
+    volumes:
+      - .:/frontend
+      - /frontend/node_modules
+      - /frontend/.next
+    #depends_on:
+      #- mongodb
+    networks:
+      - app-network
+
+  # MongoDB database
+  #mongodb:
+    #image: mongo:latest
+    #container_name: mongodb
+    #restart: always
+    #environment:
+      #MONGO_INITDB_DATABASE: puzzle-game
+    #volumes:
+      #- mongodb_data:/data/db
+    #ports:
+      #- '27017:27017'
+    #networks:
+      #- app-network
+
+# Define volumes
+#volumes: 
+  #mongodb_data: 
+
+# Define networks
+networks:
+  app-network:
+    driver: bridge

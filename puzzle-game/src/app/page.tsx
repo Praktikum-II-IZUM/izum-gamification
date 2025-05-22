@@ -12,7 +12,7 @@ import slike from '../../db/essential_book_data.json';
 export default function Home() {
   const [currentBook, setCurrentBook] = useState<BookCover | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
-  //const [_gameCompleted, setGameCompleted] = useState(false);
+  //const [gameCompleted, setGameCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

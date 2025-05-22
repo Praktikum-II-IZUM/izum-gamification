@@ -24,7 +24,12 @@
     - Ustvarite datoteko `.env` v korenski mapi projekta.
     - Dodajte potrebne konfiguracije (primer: povezava do baze, API ključi).
 
-5. **Zaženite razvojni strežnik**
+5. **Zagonite Docker container**
+    ```bash
+    docker compose up --build
+    ```
+
+6. **Zaženite razvojni strežnik**
     ```bash
     npm run dev
     ```
@@ -33,5 +38,5 @@
     yarn dev
     ```
 
-5. **Odprite aplikacijo**
+7. **Odprite aplikacijo**
     - Obiščite [http://localhost:3000](http://localhost:3000) v vašem brskalniku.

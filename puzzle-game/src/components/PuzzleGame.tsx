@@ -282,7 +282,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
             }}
             onMouseDown={(e) => handleDragStart(e, piece.id)}
             onTouchStart={(e) => handleDragStart(e, piece.id)}
-            onDoubleClick={(e) => rotatePiece(piece.id)}
+            onDoubleClick={() => rotatePiece(piece.id)}
             onTouchEnd={(e) => handleTap(e, piece.id)}
           >
             {/* ce uspesno puzzle na pravi lokaciji zelen rob */}

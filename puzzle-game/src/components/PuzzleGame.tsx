@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface PuzzlePiece {
   id: number;
@@ -32,11 +33,16 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [pieceSize, setPieceSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [isComplete, setIsComplete] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const isMobile = useIsMobile();
 
   // velikost puzzla in listenerji
   useEffect(() => {
     const img = new Image();
-    img.onload = () => initGame();  //ko se nalozi sliko se lahko starta igra
+    img.onload = () => {
+      setImageLoaded(true);
+      initGame(); //ko se nalozi sliko se lahko starta igra
+    }  
     img.src = imageSrc;
     
     // za responsive posodabljanje velikosti puzzlov ko se resiza okno
@@ -53,8 +59,10 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   }, [imageSrc]);
   
   useEffect(() => {
-    if (containerSize.width > 0) initGame();
-  }, [containerSize, rows, cols]);
+    if (containerSize.width > 0 && imageLoaded) {
+      initGame();
+    }
+  }, [containerSize, imageLoaded, rows, cols]);
 
   useEffect(() => {
     if (pieces.length && pieces.every(piece => piece.isCorrect) && !isComplete) {
@@ -94,101 +102,106 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     setIsComplete(false);
   };
 
-  // zacetek premik z misko
-  const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, id: number) => {
-    if (isRotating) return;
+// zacetek premik z misko
+const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, id: number) => {
+  e.preventDefault(); // Dodano: preprečimo privzeto vedenje
+  if (isRotating) return;
 
-    const piece = pieces.find(p => p.id === id);
-    if (piece) {
-      const rect = (e.target as HTMLElement).getBoundingClientRect();
-      
-      // upravljanje mouse eventov
-      if ('clientX' in e) {
-        setDragOffset({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        });
-      }
-      // upravljanje touch eventov
-      else if ('touches' in e) {
-        setDragOffset({
-          x: e.touches[0].clientX - rect.left,
-          y: e.touches[0].clientY - rect.top
-        });
-      }
+  const piece = pieces.find(p => p.id === id);
+  if (!piece) return;
 
-      /*Offset je pomemben zato, ker:
-      - Drži relativno pozicijo miške glede na container.
-      - Poskrbi, da container ostane pod miško tudi, ko ga premikamo.
-      - Poskrbi za gladko premikanje brez skakanja container. */
-      
-      setDraggingPiece(id);
-      setPieces(prev => [...prev.filter(p => p.id !== id), piece]);
+  const rect = (e.target as HTMLElement).getBoundingClientRect();
+  
+  // upravljanje mouse eventov
+  if ('clientX' in e) {
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  }
+  // upravljanje touch eventov
+  else if ('touches' in e) {
+    setDragOffset({
+      x: e.touches[0].clientX - rect.left,
+      y: e.touches[0].clientY - rect.top
+    });
+  }
+
+  /*Offset je pomemben zato, ker:
+  - Drži relativno pozicijo miške glede na container.
+  - Poskrbi, da container ostane pod miško tudi, ko ga premikamo.
+  - Poskrbi za gladko premikanje brez skakanja container. */
+  
+  setDraggingPiece(id);
+  // Premaknemo kos na vrh (konec seznama)
+  setPieces(prev => [...prev.filter(p => p.id !== id), piece]);
+};
+
+// premik z misko
+const handleDragMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+  if (draggingPiece === null) return; // Preverimo, ali sploh vlečemo kateri koli kos
+  
+  // Preprečimo privzeto vedenje (npr. izbiro besedila ali premikanje strani)
+  e.preventDefault();
+  
+  const containerRect = containerRef.current!.getBoundingClientRect();
+  let clientX: number, clientY: number;
+
+  // upravljanje mouse eventov
+  if ('clientX' in e) {
+    clientX = e.clientX;
+    clientY = e.clientY;
+  } 
+  // upravljanje touch eventov
+  else if ('touches' in e) {
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+  } else {
+    return; // Če ni veljavnih koordinat, ne naredimo nič
+  }
+
+  const x = clientX - containerRect.left - dragOffset.x;
+  const y = clientY - containerRect.top - dragOffset.y;
+
+  // Posodobimo le tisti kos, ki ga premikamo
+  setPieces(prev => prev.map(piece => {
+    if (piece.id === draggingPiece) {
+      const boundedX = Math.min(Math.max(0, x), containerSize.width - pieceSize.width);
+      const boundedY = Math.min(Math.max(0, y), containerSize.height - pieceSize.height);
+      return { ...piece, x: boundedX, y: boundedY, isCorrect: false };
     }
-  };
+    return piece;
+  }));
+};
 
-  // premik z misko
-  const handleDragMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    if (draggingPiece !== null) {
-      const containerRect = containerRef.current!.getBoundingClientRect();
-
-      // upravljanje mouse eventov
-      if ('clientX' in e) {
-        const x = e.clientX - containerRect.left - dragOffset.x;
-        const y = e.clientY - containerRect.top - dragOffset.y;
-
-        setPieces(prev => prev.map(piece => {
-          if (piece.id === draggingPiece) {
-            const boundedX = Math.min(Math.max(0, x), containerSize.width - pieceSize.width);
-            const boundedY = Math.min(Math.max(0, y), containerSize.height - pieceSize.height);
-            return { ...piece, x: boundedX, y: boundedY };
-          }
-          return piece;
-        }));
-      }
-      // upravljanje touch eventov
-      else if ('touches' in e) {
-        const x = e.touches[0].clientX - containerRect.left - dragOffset.x;
-        const y = e.touches[0].clientY - containerRect.top - dragOffset.y;
-
-        setPieces(prev => prev.map(piece => {
-          if (piece.id === draggingPiece) {
-            const boundedX = Math.min(Math.max(0, x), containerSize.width - pieceSize.width);
-            const boundedY = Math.min(Math.max(0, y), containerSize.height - pieceSize.height);
-            return { ...piece, x: boundedX, y: boundedY };
-          }
-          return piece;
-        }));
-      }
-    }
-  };
-
-  // konec premika miske in preverjanje ce je pozicija ok
-  const handleDragEnd = () => {
-    if (draggingPiece !== null) {
-      setPieces(prev => prev.map(piece => {
-        if (piece.id === draggingPiece) {
-          const isCloseX = Math.abs(piece.x - piece.correctX) < pieceSize.width * 0.15;
-          const isCloseY = Math.abs(piece.y - piece.correctY) < pieceSize.height * 0.15;
-          const isCorrectRotation = piece.rotation % 360 === 0;
-          
-          if (isCloseX && isCloseY && isCorrectRotation) {
-            return {
-              ...piece,
-              x: piece.correctX,
-              y: piece.correctY,
-              rotation: 0,
-              isCorrect: true
-            };
-          }
-          return { ...piece, isCorrect: false };
+// konec premika miske in preverjanje ce je pozicija ok
+const handleDragEnd = () => {
+  if (draggingPiece !== null) {
+    // Preverimo, ali je kos na pravi poziciji
+    setPieces(prev => prev.map(piece => {
+      if (piece.id === draggingPiece) {
+        const isCloseX = Math.abs(piece.x - piece.correctX) < pieceSize.width * 0.15;
+        const isCloseY = Math.abs(piece.y - piece.correctY) < pieceSize.height * 0.15;
+        const isCorrectRotation = piece.rotation % 360 === 0;
+        
+        // Če je kos dovolj blizu in pravilno obrnjen, ga poravnamo
+        if (isCloseX && isCloseY && isCorrectRotation) {
+          return {
+            ...piece,
+            x: piece.correctX,
+            y: piece.correctY,
+            rotation: 0,
+            isCorrect: true
+          };
         }
-        return piece;
-      }));
-      
-      setDraggingPiece(null);
-    }
-  };
+        return { ...piece, isCorrect: false };
+      }
+      return piece;
+    }));
+    
+    setDraggingPiece(null);
+  }
+};
 
   // rotacija puzzla
   const rotatePiece = (id: number) => {
@@ -283,7 +296,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
             onMouseDown={(e) => handleDragStart(e, piece.id)}
             onTouchStart={(e) => handleDragStart(e, piece.id)}
             onDoubleClick={() => rotatePiece(piece.id)}
-            onTouchEnd={(e) => handleTap(e, piece.id)}
+            onTouchEnd={(e) => isMobile && handleTap(e, piece.id)}
           >
             {/* ce uspesno puzzle na pravi lokaciji zelen rob */}
             <div 

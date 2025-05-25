@@ -8,6 +8,8 @@ import { BookInfo } from '@/components/BookInfo';
 import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
 import slike from '../../db/essential_book_data.json';
+// import { db } from '../../db/firestore_init';
+import { db, collection, getDocs } from '../../db/firebase_client';
 
 export default function Home() {
   const [currentBook, setCurrentBook] = useState<BookCover | null>(null);
@@ -20,20 +22,21 @@ export default function Home() {
   }, []);
 
   const loadRandomBook = async () => {
-    // Začasno mock data
-    const random = Math.floor(Math.random()*20);
-    const element = slike[random];
-    const mockBook: BookCover = {
+    
+    const booksCollection = collection(db, 'books');
+    const snapshot = await getDocs(booksCollection);
+    const booksData = snapshot.docs.map(doc => doc.data());
+    // console.log(booksData);
+
+    const random = Math.floor(Math.random()*booksData.length);
+    const element = booksData[random];
+    const realBook: BookCover = {
       title: element.title,
       author: element.author,
       coverUrl: element.image_url
     };
-    // const mockBook: BookCover = {
-    //   title: "Mali princ",
-    //   author: "Antoine de Saint-Exupéry",
-    //   coverUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=700&h=1000&auto=format"
-    // };
-    setCurrentBook(mockBook);
+
+    setCurrentBook(realBook);
     setLoading(false);
   };
 

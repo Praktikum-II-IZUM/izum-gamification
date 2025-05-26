@@ -34,7 +34,79 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [isComplete, setIsComplete] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [correctPieces, setCorrectPieces] = useState<Set<number>>(new Set());
   const isMobile = useIsMobile();
+  
+   // Zvočna animacija
+   const playSuccessSound = () => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const now = audioCtx.currentTime;
+  
+      // === White Noise Click ===
+      const bufferSize = audioCtx.sampleRate * 0.04; // 40ms
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+  
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3.0); // fast decay
+      }
+  
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+  
+      const snapFilter = audioCtx.createBiquadFilter();
+      snapFilter.type = "bandpass";
+      snapFilter.frequency.setValueAtTime(800, now);
+      snapFilter.Q.setValueAtTime(7, now); // narrow, snappy
+  
+      const snapGain = audioCtx.createGain();
+      snapGain.gain.setValueAtTime(0.8, now);
+      snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+  
+      noise.connect(snapFilter);
+      snapFilter.connect(snapGain);
+      snapGain.connect(audioCtx.destination);
+  
+      // === Low "Thump" Oscillator ===
+      const thumpOsc = audioCtx.createOscillator();
+      const thumpGain = audioCtx.createGain();
+      thumpOsc.type = "sine";
+      thumpOsc.frequency.setValueAtTime(120, now); // Low thump
+      thumpGain.gain.setValueAtTime(0.5, now);
+      thumpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+  
+      thumpOsc.connect(thumpGain);
+      thumpGain.connect(audioCtx.destination);
+  
+      // Start both
+      noise.start(now);
+      thumpOsc.start(now);
+      thumpOsc.stop(now + 0.3);
+    } catch (e) {
+      console.warn("Audio playback failed:", e);
+    }
+  };
+
+  // Preveri, ali se je spremenilo število pravilno postavljenih kosov
+  useEffect(() => {
+    const currentlyCorrect = new Set(
+      pieces.filter(p => p.isCorrect).map(p => p.id)
+    );
+    
+    // Če je novih pravilnih kosov več kot prej, predvajaj zvok
+    if (currentlyCorrect.size > correctPieces.size) {
+      playSuccessSound();
+    }
+    
+    setCorrectPieces(currentlyCorrect);
+    
+    // Preveri, ali je uganka rešena
+    if (pieces.length > 0 && pieces.every(piece => piece.isCorrect) && !isComplete) {
+      setIsComplete(true);
+      onComplete();
+    }
+  }, [pieces]);
 
   // velikost puzzla in listenerji
   useEffect(() => {
@@ -63,13 +135,6 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       initGame();
     }
   }, [containerSize, imageLoaded, rows, cols]);
-
-  useEffect(() => {
-    if (pieces.length && pieces.every(piece => piece.isCorrect) && !isComplete) {
-      setIsComplete(true);
-      onComplete();
-    }
-  }, [pieces, isComplete, onComplete]);
 
   // inicializacija zacetek igre
   const initGame = () => {

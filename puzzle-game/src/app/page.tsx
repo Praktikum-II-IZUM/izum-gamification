@@ -90,7 +90,7 @@ export default function Home() {
               ) : currentBook ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                   <div className="flex justify-center">
-                    <img 
+                    <img
                       src={currentBook.coverUrl} 
                       alt={currentBook.title} 
                       className="h-95 sm:h-120 object-contain rounded-md shadow-md hover:scale-105 transition-transform duration-300" 

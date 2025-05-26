@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { PuzzleGame } from '@/components/PuzzleGame';
-import { BookInfo } from '@/components/BookInfo';
+//import { BookInfo } from '@/components/BookInfo';
 import { DifficultySelector } from '@/components/DifficultySelector';
 import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
 import { useIsMobile } from '@/hooks/use-mobile';
-import slike from '../../db/essential_book_data.json';
+// import slike from '../../db/essential_book_data.json';
 // import { db } from '../../db/firestore_init';
 import { db, collection, getDocs } from '../../db/firebase_client';
 
@@ -93,7 +93,7 @@ export default function Home() {
                     <img 
                       src={currentBook.coverUrl} 
                       alt={currentBook.title} 
-                      className="h-64 sm:h-72 object-contain rounded-md shadow-md hover:scale-105 transition-transform duration-300" 
+                      className="h-95 sm:h-120 object-contain rounded-md shadow-md hover:scale-105 transition-transform duration-300" 
                     />
                   </div>
                   <div>
@@ -116,7 +116,7 @@ export default function Home() {
               <Button 
                 onClick={startGame} 
                 disabled={loading || !currentBook}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-105 transition-transform duration-300"
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-105 transition-transform duration-300 text-white"
                 size={isMobile ? "lg" : "default"}
               >
                 Začni igro

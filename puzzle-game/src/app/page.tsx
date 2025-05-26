@@ -157,7 +157,7 @@ export default function Home() {
                     imageSrc={currentBook.coverUrl}
                     rows={selectedDifficulty.rows}
                     cols={selectedDifficulty.cols}
-                    onComplete={loadRandomBook}
+                    onComplete={playAgain}
                   />
                 )}
               </CardContent>

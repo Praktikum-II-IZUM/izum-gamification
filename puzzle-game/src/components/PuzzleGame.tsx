@@ -2,6 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
+declare global {
+  interface Window {
+    webkitAudioContext: typeof AudioContext;
+  }
+}
+
 interface PuzzlePiece {
   id: number;
   x: number;
@@ -40,7 +46,8 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
    // Zvočna animacija
    const playSuccessSound = () => {
     try {
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audioCtx = new AudioContext();
       const now = audioCtx.currentTime;
   
       // === White Noise Click ===

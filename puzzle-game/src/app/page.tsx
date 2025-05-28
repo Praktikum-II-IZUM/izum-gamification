@@ -10,8 +10,7 @@ import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
 import { useIsMobile } from '@/hooks/use-mobile';
 // import slike from '../../db/essential_book_data.json';
-// import { db } from '../../db/firestore_init';
-import { db, collection, getDocs } from '../../db/firebase_client';
+import { db, collection, getDocs } from '../../db/firebase_client.js';
 
 type Difficulty = {
   cols: number;
@@ -53,7 +52,7 @@ export default function Home() {
     const booksCollection = collection(db, 'books');
     const snapshot = await getDocs(booksCollection);
     const booksData = snapshot.docs.map(doc => doc.data());
-    // console.log(booksData);
+    console.log(booksData);
 
     const random = Math.floor(Math.random()*booksData.length);
     const element = booksData[random];
@@ -65,6 +64,7 @@ export default function Home() {
 
     setCurrentBook(realBook);
     setLoading(false);
+    console.log(`Loading: ${loading}`);
   };
 
   const playAgain = () => {

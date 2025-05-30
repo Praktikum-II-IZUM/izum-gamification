@@ -44,7 +44,9 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [correctPieces, setCorrectPieces] = useState<Set<number>>(new Set());
   const isMobile = useIsMobile();
   const [showSolution, setShowSolution] = useState(false);
-  
+  const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
+  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
+
   // Zvočna animacija
   const playSuccessSound = () => {
     try {
@@ -117,28 +119,44 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     }
   }, [pieces]);
 
-  // velikost puzzla in listenerji
+  // Load the image to get its natural dimensions
   useEffect(() => {
     const img = new Image();
     img.onload = () => {
+      setImageAspectRatio(img.width / img.height);
       setImageLoaded(true);
-      initGame(); //ko se nalozi sliko se lahko starta igra
-    }  
+    };
     img.src = imageSrc;
+  }, [imageSrc]);
+
+  // Update container dimensions based on window size and image aspect ratio
+  useEffect(() => {
+    if (!imageAspectRatio) return;
     
-    // za responsive posodabljanje velikosti puzzlov ko se resiza okno
-    const updateContainerSize = () => {
-      if (containerRef.current) {
-        const { width, height } = containerRef.current.getBoundingClientRect();
-        setContainerSize({ width, height });
+    const updateSize = () => {
+      if (!containerRef.current) return;
+      
+      const maxWidth = Math.min(window.innerWidth * 0.9, 1200);
+      const maxHeight = window.innerHeight * 0.7;
+      
+      let width = maxWidth;
+      let height = width / imageAspectRatio;
+      
+      if (height > maxHeight) {
+        height = maxHeight;
+        width = height * imageAspectRatio;
       }
+      
+      setContainerDimensions({ width, height });
+      setContainerSize({ width, height });
     };
     
-    updateContainerSize();
-    window.addEventListener('resize', updateContainerSize);
-    return () => window.removeEventListener('resize', updateContainerSize);
-  }, [imageSrc]);
-  
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, [imageAspectRatio]);
+
+  // Initialize game when container size is set and image is loaded
   useEffect(() => {
     if (containerSize.width > 0 && imageLoaded) {
       initGame();
@@ -150,7 +168,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     if (!containerRef.current || containerSize.width === 0) return;
     
     const pieceWidth = containerSize.width / cols;
-    const pieceHeight = containerSize.height / rows;
+    const pieceHeight = pieceWidth * (1 / imageAspectRatio! * (cols / rows));
     setPieceSize({ width: pieceWidth, height: pieceHeight });
     
     const newPieces: PuzzlePiece[] = [];
@@ -344,53 +362,41 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         {showSolution ? 'Skrij rešitev' : 'Prikaži rešitev'}
       </Button>
       
-      <div className="relative w-full">
+      <div className="relative" style={{
+        width: `${containerDimensions.width}px`,
+        height: `${containerDimensions.height}px`,
+        maxWidth: '90vw',
+        maxHeight: '70vh'
+      }}>
         {/* Background solution */}
         {showSolution && (
           <div 
             className="absolute inset-0 z-0"
             style={{
               backgroundImage: `url(${imageSrc})`,
-              backgroundSize: 'cover',
+              backgroundSize: 'contain',
               backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
               width: '100%',
               height: '100%',
-              borderRadius: '0.375rem',
             }}
           />
         )}
         
-        {/* Puzzle */}
+        {/* Puzzle container */}
         <div 
           ref={containerRef}
           className={cn(
-            "relative rounded-md shadow-inner overflow-hidden touch-none",
-            "h-[70vh] min-h-[400px] max-h-[800px]",
-            "w-auto mx-auto",
-            showSolution ? 'bg-white/30' : 'bg-white/90'
+            "relative w-full h-full rounded-md shadow-inner overflow-hidden touch-none",
+            showSolution ? 'bg-white/30' : 'bg-white/90',
+            !imageLoaded && 'invisible'
           )}
-          style={{
-            aspectRatio: `${cols}/${rows}`, 
-            maxWidth: '90vw',
-          }}
           onMouseMove={(e) => handleDragMove(e)}
           onMouseUp={handleDragEnd}
           onMouseLeave={handleDragEnd}
           onTouchMove={(e) => handleDragMove(e)}
           onTouchEnd={handleDragEnd}
         >
-          <div 
-            className="absolute inset-0 grid" 
-            style={{ 
-              gridTemplateColumns: `repeat(${cols}, 1fr)`,
-              gridTemplateRows: `repeat(${rows}, 1fr)`
-            }}
-          >
-            {Array.from({ length: rows * cols }).map((_, i) => (
-              <div key={`grid-${i}`} className="border border-dashed border-gray-300" />
-            ))}
-          </div>
-          
           {pieces.map((piece) => (
             <div
               key={piece.id}

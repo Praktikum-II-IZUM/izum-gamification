@@ -327,10 +327,19 @@ const handleDragEnd = () => {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center w-full">
       <div 
         ref={containerRef}
-        className="relative w-full aspect-[3/4] max-w-lg bg-gray-100 rounded-md shadow-inner overflow-hidden touch-none"
+        className={cn(
+          "relative w-full bg-gray-100 rounded-md shadow-inner overflow-hidden touch-none",
+          "h-[70vh] min-h-[400px] max-h-[800px]",
+          "w-auto", 
+          "mx-auto" 
+        )}
+        style={{
+          aspectRatio: `${cols}/${rows}`, 
+          maxWidth: '90vw', 
+        }}
         onMouseMove={(e) => handleDragMove(e)}
         onMouseUp={handleDragEnd}
         onMouseLeave={handleDragEnd}

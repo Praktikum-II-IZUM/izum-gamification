@@ -9,6 +9,7 @@ import { DifficultySelector } from '@/components/DifficultySelector';
 import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 // import slike from '../../db/essential_book_data.json';
 import { db, collection, getDocs } from '../../db/firebase_client.js';
 
@@ -72,22 +73,22 @@ export default function Home() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner size="lg" className="h-16 w-16" />
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col items-center min-h-screen p-4">
       {!gameStarted ? (
-          <Card className="shadow-lg border-2 border-primary/20 bg-white/80 backdrop-blur">
+          <Card className="shadow-lg border-2 border-primary/20 bg-white/80 backdrop-blur w-full max-w-4xl">
             <CardHeader>
               <CardTitle className="text-center text-2xl">Izberi težavnost</CardTitle>
             </CardHeader>
             <CardContent>
-              {loading ? (
-                <div className="flex justify-center items-center h-40">
-                  <div className="animate-pulse text-lg">Nalaganje naslovnice...</div>
-                </div>
-              ) : currentBook ? (
+              {currentBook ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                   <div className="flex justify-center">
                     <img
@@ -115,7 +116,7 @@ export default function Home() {
             <CardFooter className="flex flex-wrap justify-center gap-4">
               <Button 
                 onClick={startGame} 
-                disabled={loading || !currentBook}
+                disabled={!currentBook}
                 className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-105 transition-transform duration-300 text-white"
                 size={isMobile ? "lg" : "default"}
               >
@@ -124,7 +125,6 @@ export default function Home() {
               <Button 
                 variant="outline" 
                 onClick={loadRandomBook}
-                disabled={loading}
                 className="hover:scale-105 transition-transform duration-300"
                 size={isMobile ? "lg" : "default"}
               >
@@ -145,33 +145,39 @@ export default function Home() {
           </Card>
         ) : (
           <div className="space-y-6">
-            <Card className="shadow-lg border border-primary/20 bg-white/80 backdrop-blur">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-center text-xl">
-                  {selectedDifficulty.cols}×{selectedDifficulty.rows} Puzzle
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                {currentBook && (
-                  <PuzzleGame
-                    imageSrc={currentBook.coverUrl}
-                    rows={selectedDifficulty.rows}
-                    cols={selectedDifficulty.cols}
-                    onComplete={playAgain}
-                  />
-                )}
-              </CardContent>
-              <CardFooter className="flex justify-center">
-                <Button 
-                  variant="outline" 
-                  onClick={playAgain}
-                  className="hover:scale-105 transition-transform duration-300"
-                  size={isMobile ? "lg" : "default"}
-                >
-                  Nazaj na izbiro težavnosti
-                </Button>
-              </CardFooter>
-            </Card>
+            <div className="w-full max-w-6xl mx-auto">
+              <Card className="shadow-lg border border-primary/20 bg-white/80 backdrop-blur w-full">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-center text-2xl md:text-3xl">
+                    {selectedDifficulty.cols}×{selectedDifficulty.rows} Puzzle
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0 px-4 md:px-8 pb-6">
+                  {currentBook && (
+                    <div className="flex justify-center w-full">
+                      <div className="w-full max-w-[1400px]">
+                        <PuzzleGame
+                          imageSrc={currentBook.coverUrl}
+                          rows={selectedDifficulty.rows}
+                          cols={selectedDifficulty.cols}
+                          onComplete={playAgain}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+                <CardFooter className="flex justify-center pb-6">
+                  <Button 
+                    variant="outline" 
+                    onClick={playAgain}
+                    className="hover:scale-105 transition-transform duration-300 px-8 py-2 text-base md:text-lg"
+                    size={isMobile ? "lg" : "default"}
+                  >
+                    Nazaj na izbiro težavnosti
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
           </div>
         )}
     </div>

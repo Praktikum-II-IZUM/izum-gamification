@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { PuzzleGame } from '@/components/PuzzleGame';
-//import { BookInfo } from '@/components/BookInfo';
+import { BookInfo } from '@/components/BookInfo';
 import { DifficultySelector } from '@/components/DifficultySelector';
 import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
@@ -31,7 +31,7 @@ const DIFFICULTIES: Difficulty[] = [
 export default function Home() {
   const [currentBook, setCurrentBook] = useState<BookCover | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
-  //const [gameCompleted, setGameCompleted] = useState(false);
+  const [gameCompleted, setGameCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(DIFFICULTIES[0]);
   const isMobile = useIsMobile();
@@ -42,6 +42,11 @@ export default function Home() {
 
   const startGame = () => {
     setGameStarted(true);
+    setGameCompleted(false);
+  };
+
+  const handleGameComplete = () => {
+    setGameCompleted(true);
   };
   
   useEffect(() => {
@@ -64,12 +69,15 @@ export default function Home() {
     };
 
     setCurrentBook(realBook);
+    setGameStarted(false);
+    setGameCompleted(false);
     setLoading(false);
     console.log(`Loading: ${loading}`);
   };
 
   const playAgain = () => {
     setGameStarted(false);
+    setGameCompleted(false);
   };
 
   if (loading) {
@@ -143,6 +151,50 @@ export default function Home() {
               )}
             </CardFooter>
           </Card>
+        ) : gameCompleted ? (
+          <div className="space-y-6">
+            <Card className="shadow-lg border-2 border-primary/20 bg-white/80 backdrop-blur w-full max-w-4xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 opacity-60 z-0"></div>
+              <div className="relative z-10">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-center text-2xl text-green-800">Čestitke!</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div className="flex justify-center">
+                      <div className="relative group">
+                        <img 
+                          src={currentBook?.coverUrl} 
+                          alt={currentBook?.title || "Knjiga"} 
+                          className="h-64 sm:h-72 object-contain rounded-md shadow-lg animate-[bounce_1s_ease-in-out] group-hover:scale-105 transition-transform duration-300" 
+                        />
+                      </div>
+                    </div>
+                    <BookInfo book={currentBook} />
+                  </div>
+                </CardContent>
+                <CardFooter className="flex flex-wrap justify-center gap-4">
+                  <Button 
+                    onClick={playAgain}
+                    className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:scale-105 transition-transform duration-300"
+                    size={isMobile ? "lg" : "default"}
+                  >
+                    Igraj ponovno
+                  </Button>
+                  {currentBook?.cobissUrl && (
+                    <Button 
+                      variant="secondary"
+                      onClick={() => window.open(currentBook.cobissUrl, '_blank')}
+                      size={isMobile ? "lg" : "default"}
+                      className="hover:scale-105 transition-transform duration-300"
+                    >
+                      Odpri v COBISS Plus
+                    </Button>
+                  )}
+                </CardFooter>
+              </div>
+            </Card>
+          </div>
         ) : (
           <div className="space-y-6">
             <div className="w-full max-w-6xl mx-auto">
@@ -160,7 +212,7 @@ export default function Home() {
                           imageSrc={currentBook.coverUrl}
                           rows={selectedDifficulty.rows}
                           cols={selectedDifficulty.cols}
-                          onComplete={playAgain}
+                          onComplete={handleGameComplete}
                         />
                       </div>
                     </div>

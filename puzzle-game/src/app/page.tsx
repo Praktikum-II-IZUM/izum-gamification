@@ -89,9 +89,10 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-4">
-      {!gameStarted ? (
-          <Card className="shadow-lg border-2 border-primary/20 bg-white/80 backdrop-blur w-full max-w-4xl">
+    <div className="min-h-screen bg-gray-900 p-4">
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-2rem)]">
+        {!gameStarted ? (
+          <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full max-w-4xl">
             <CardHeader>
               <CardTitle className="text-center text-2xl">Izberi težavnost</CardTitle>
             </CardHeader>
@@ -106,35 +107,45 @@ export default function Home() {
                     />
                   </div>
                   <div className="w-full max-w-md">
-                    <h3 className="text-xl font-semibold mb-2">{currentBook.title}</h3>
-                    <p className="text-gray-600 mb-6">Avtor: {currentBook.author}</p>
-                    <div className="bg-inherit rounded-lg overflow-hidden max-w-[400px] mx-auto">
-                      <div className="pt-4">
-                        <DifficultySelector 
-                          difficulties={DIFFICULTIES}
-                          selected={selectedDifficulty}
-                          onChange={handleDifficultyChange}
-                          className="w-full px-0"
-                        />
+                    <div className="flex flex-col h-full">
+                      <div className="min-h-[120px] mb-4">
+                        <h3 className="text-xl font-semibold mb-2 line-clamp-2" title={currentBook.title}>
+                          {currentBook.title}
+                        </h3>
+                        <p className="text-gray-600 line-clamp-2" title={`Avtor: ${currentBook.author}`}>
+                          Avtor: {currentBook.author}
+                        </p>
                       </div>
-                      <div className="pt-2">
-                        <div className="flex flex-col sm:flex-row gap-3 w-full">
-                          <Button 
-                            onClick={startGame} 
-                            disabled={!currentBook}
-                            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
-                            size="lg"
-                          >
-                            Začni igro
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            onClick={loadRandomBook}
-                            className="bg-white hover:bg-gray-50 text-gray-800 border-gray-300 hover:border-gray-400 text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
-                            size="lg"
-                          >
-                            Nova knjiga
-                          </Button>
+                      <div className="flex-1 flex flex-col">
+                        <div className="bg-inherit rounded-lg overflow-hidden max-w-[400px] mx-auto w-full">
+                          <div className="pt-4">
+                            <DifficultySelector 
+                              difficulties={DIFFICULTIES}
+                              selected={selectedDifficulty}
+                              onChange={handleDifficultyChange}
+                              className="w-full px-0"
+                            />
+                          </div>
+                          <div className="pt-2">
+                            <div className="flex flex-col sm:flex-row gap-3 w-full">
+                              <Button 
+                                onClick={startGame} 
+                                disabled={!currentBook}
+                                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
+                                size="lg"
+                              >
+                                Začni igro
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                onClick={loadRandomBook}
+                                className="bg-white hover:bg-gray-50 text-gray-800 border-gray-300 hover:border-gray-400 text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
+                                size="lg"
+                              >
+                                Nova knjiga
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -162,7 +173,7 @@ export default function Home() {
           </Card>
         ) : gameCompleted ? (
           <div className="space-y-6">
-            <Card className="shadow-lg border-2 border-primary/20 bg-white/80 backdrop-blur w-full max-w-4xl">
+            <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full max-w-4xl">
               <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 opacity-60 z-0"></div>
               <div className="relative z-10">
                 <CardHeader className="text-center">
@@ -207,7 +218,7 @@ export default function Home() {
         ) : (
           <div className="space-y-6">
             <div className="w-full max-w-6xl mx-auto">
-              <Card className="shadow-lg border border-primary/20 bg-white/80 backdrop-blur w-full">
+              <Card className="shadow-lg border border-gray-700 bg-gray-800 w-full">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-center text-2xl md:text-3xl">
                     {selectedDifficulty.cols}×{selectedDifficulty.rows} Puzzle
@@ -241,6 +252,7 @@ export default function Home() {
             </div>
           </div>
         )}
+      </div>
     </div>
   );
 }

@@ -12,12 +12,14 @@ interface DifficultySelectorProps {
   difficulties: Difficulty[];
   selected: Difficulty;
   onChange: (difficulty: Difficulty) => void;
+  className?: string;
 }
 
 export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   difficulties,
   selected,
-  onChange
+  onChange,
+  className
 }) => {
   const isMobile = useIsMobile();
   
@@ -67,7 +69,7 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   );
 
   return (
-    <div className="w-full px-5 py-4 max-w-3xl mx-auto">
+    <div className={cn("w-full px-5 py-4 max-w-3xl mx-auto", className)}>
       <p className="text-lg font-medium text-gray-600 mb-3 px-1">Težavnost</p>
       <div className="bg-[#EEEEEF] rounded-2xl p-2 w-full">
         {renderButtonRow(firstRow)}

@@ -105,14 +105,39 @@ export default function Home() {
                       className="h-95 sm:h-120 object-contain rounded-md shadow-md hover:scale-105 transition-transform duration-300" 
                     />
                   </div>
-                  <div>
+                  <div className="w-full max-w-md">
                     <h3 className="text-xl font-semibold mb-2">{currentBook.title}</h3>
-                    <p className="text-gray-600 mb-4">Avtor: {currentBook.author}</p>
-                    <DifficultySelector 
-                      difficulties={DIFFICULTIES}
-                      selected={selectedDifficulty}
-                      onChange={handleDifficultyChange}
-                    />
+                    <p className="text-gray-600 mb-6">Avtor: {currentBook.author}</p>
+                    <div className="bg-inherit rounded-lg overflow-hidden max-w-[400px] mx-auto">
+                      <div className="pt-4">
+                        <DifficultySelector 
+                          difficulties={DIFFICULTIES}
+                          selected={selectedDifficulty}
+                          onChange={handleDifficultyChange}
+                          className="w-full px-0"
+                        />
+                      </div>
+                      <div className="pt-2">
+                        <div className="flex flex-col sm:flex-row gap-3 w-full">
+                          <Button 
+                            onClick={startGame} 
+                            disabled={!currentBook}
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
+                            size="lg"
+                          >
+                            Začni igro
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            onClick={loadRandomBook}
+                            className="bg-white hover:bg-gray-50 text-gray-800 border-gray-300 hover:border-gray-400 text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
+                            size="lg"
+                          >
+                            Nova knjiga
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -122,22 +147,6 @@ export default function Home() {
               )}
             </CardContent>
             <CardFooter className="flex flex-wrap justify-center gap-4">
-              <Button 
-                onClick={startGame} 
-                disabled={!currentBook}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-105 transition-transform duration-300 text-white"
-                size={isMobile ? "lg" : "default"}
-              >
-                Začni igro
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={loadRandomBook}
-                className="hover:scale-105 transition-transform duration-300"
-                size={isMobile ? "lg" : "default"}
-              >
-                Nova knjiga
-              </Button>
               {currentBook?.cobissUrl && (
                 <Button 
                   variant="secondary"

@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type Difficulty = {
   cols: number;
@@ -18,6 +19,12 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   selected,
   onChange
 }) => {
+  const isMobile = useIsMobile();
+  
+  // Always split into two rows with 3 items each
+  const firstRow = difficulties.slice(0, 3);
+  const secondRow = difficulties.slice(3);
+
   // Define colors for each difficulty level (blue to red gradient)
   const difficultyColors = [
     'from-blue-400 to-blue-500',    // Easiest
@@ -28,33 +35,43 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
     'from-red-400 to-red-500'      // Hardest
   ];
 
-  return (
-    <div className="space-y-3">
-      <p className="text-sm font-medium text-gray-600 mb-2">Težavnost</p>
-      <div className="inline-flex items-center bg-gray-100 p-1 rounded-lg space-x-0.5">
-        {difficulties.map((difficulty, index) => {
-          const isSelected = selected.label === difficulty.label;
-          const bgGradient = difficultyColors[index] || 'from-gray-400 to-gray-500';
-          
-          return (
+  const renderButtonRow = (difficulties: Difficulty[], isSecondRow = false) => (
+    <div className={`flex items-center ${isSecondRow ? 'mt-3' : ''}`}>
+      {difficulties.map((difficulty, index) => {
+        const isSelected = selected.label === difficulty.label;
+        const difficultyIndex = isSecondRow ? index + 3 : index;
+        const bgGradient = difficultyColors[difficultyIndex] || 'from-gray-200 to-gray-300';
+        
+        return (
+          <React.Fragment key={difficulty.label}>
+            {index > 0 && (
+              <div className="h-6 w-px bg-gray-300 mx-1.5" />
+            )}
             <button
-              key={difficulty.label}
               className={cn(
-                "px-3 py-2 text-sm font-medium transition-all duration-200",
-                "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
+                "px-4 py-4 text-base font-medium transition-all duration-150 h-14 flex-1 min-w-0",
+                "focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400",
+                "rounded-xl whitespace-nowrap bg-[#EEEEEF]",
                 isSelected 
-                  ? `text-white bg-gradient-to-r ${bgGradient} shadow-md rounded`
-                  : "text-gray-600 hover:bg-gray-200 rounded",
-                "flex-1 min-w-0" // Ensure buttons take equal width and handle text overflow
+                  ? `text-white bg-gradient-to-r ${bgGradient} shadow-md`
+                  : "text-gray-600 hover:bg-gray-200"
               )}
               onClick={() => onChange(difficulty)}
             >
-              <span className="whitespace-nowrap">
-                {difficulty.label.split(' ')[0]}
-              </span>
+              {difficulty.label.split(' ')[0]}
             </button>
-          );
-        })}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+
+  return (
+    <div className="w-full px-5 py-4 max-w-3xl mx-auto">
+      <p className="text-lg font-medium text-gray-600 mb-3 px-1">Težavnost</p>
+      <div className="bg-[#EEEEEF] rounded-2xl p-2 w-full">
+        {renderButtonRow(firstRow)}
+        {secondRow.length > 0 && renderButtonRow(secondRow, true)}
       </div>
     </div>
   );

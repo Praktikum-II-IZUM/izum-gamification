@@ -54,13 +54,12 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       const audioCtx = new AudioContext();
       const now = audioCtx.currentTime;
   
-      // === White Noise Click ===
-      const bufferSize = audioCtx.sampleRate * 0.04; // 40ms
+      const bufferSize = audioCtx.sampleRate * 0.04;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
   
       for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3.0); // fast decay
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3.0);
       }
   
       const noise = audioCtx.createBufferSource();
@@ -69,7 +68,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       const snapFilter = audioCtx.createBiquadFilter();
       snapFilter.type = "bandpass";
       snapFilter.frequency.setValueAtTime(800, now);
-      snapFilter.Q.setValueAtTime(7, now); // narrow, snappy
+      snapFilter.Q.setValueAtTime(7, now);
   
       const snapGain = audioCtx.createGain();
       snapGain.gain.setValueAtTime(0.8, now);
@@ -79,18 +78,16 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       snapFilter.connect(snapGain);
       snapGain.connect(audioCtx.destination);
   
-      // === Low "Thump" Oscillator ===
       const thumpOsc = audioCtx.createOscillator();
       const thumpGain = audioCtx.createGain();
       thumpOsc.type = "sine";
-      thumpOsc.frequency.setValueAtTime(120, now); // Low thump
+      thumpOsc.frequency.setValueAtTime(120, now);
       thumpGain.gain.setValueAtTime(0.5, now);
       thumpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
   
       thumpOsc.connect(thumpGain);
       thumpGain.connect(audioCtx.destination);
   
-      // Start both
       noise.start(now);
       thumpOsc.start(now);
       thumpOsc.stop(now + 0.3);

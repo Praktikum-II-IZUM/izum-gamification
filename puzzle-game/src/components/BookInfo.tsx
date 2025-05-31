@@ -19,29 +19,6 @@ export const BookInfo: React.FC<BookInfoProps> = ({ book }) => {
           <span className="text-gray-600 font-medium">Avtor: </span>
           <span className="text-gray-900">{book.author}</span>
         </div>
-        
-        {book.year && (
-          <div>
-            <span className="text-gray-600 font-medium">Leto izdaje: </span>
-            <span className="text-gray-900">{book.year}</span>
-          </div>
-        )}
-        
-        {book.publisher && (
-          <div>
-            <span className="text-gray-600 font-medium">Založba: </span>
-            <span className="text-gray-900">{book.publisher}</span>
-          </div>
-        )}
-      </div>
-
-      <div className="relative w-full">
-        <img 
-          src={book.coverUrl} 
-          alt={`${book.title} - naslovnica`}
-          className="w-full h-full object-cover rounded-lg"
-          loading="lazy"
-        />
       </div>
       
       {book.cobissUrl && (

@@ -10,6 +10,7 @@ import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { useToast } from "@/components/ui/use-toast";
 // import slike from '../../db/essential_book_data.json';
 import { db, collection, getDocs } from '../../db/firebase_client.js';
 
@@ -35,6 +36,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(DIFFICULTIES[0]);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   const handleDifficultyChange = (difficulty: Difficulty) => {
     setSelectedDifficulty(difficulty);
@@ -43,10 +45,18 @@ export default function Home() {
   const startGame = () => {
     setGameStarted(true);
     setGameCompleted(false);
+    toast({
+      title: "Nova igra",
+      description: `Nova igra začeta z težavnostjo: ${selectedDifficulty.label}`,
+    });
   };
-
+  
   const handleGameComplete = () => {
     setGameCompleted(true);
+    toast({
+      title: "Čestitamo!",
+      description: "Igra je končana! Čestitamo na uspehu!",
+    });
   };
   
   useEffect(() => {
@@ -94,7 +104,7 @@ export default function Home() {
         {!gameStarted ? (
           <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full max-w-4xl">
             <CardHeader>
-              <CardTitle className="text-center text-2xl">Izberi težavnost</CardTitle>
+              <CardTitle className="text-center text-2xl">COBISS Puzzle</CardTitle>
             </CardHeader>
             <CardContent>
               {currentBook ? (

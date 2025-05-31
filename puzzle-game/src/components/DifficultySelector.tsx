@@ -1,6 +1,5 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
-import { useIsMobile } from '@/hooks/use-mobile';
 
 type Difficulty = {
   cols: number;
@@ -19,8 +18,6 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   selected,
   onChange
 }) => {
-  const isMobile = useIsMobile();
-  
   // Always split into two rows with 3 items each
   const firstRow = difficulties.slice(0, 3);
   const secondRow = difficulties.slice(3);

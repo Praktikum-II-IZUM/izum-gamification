@@ -397,6 +397,19 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
           onTouchMove={(e) => handleDragMove(e)}
           onTouchEnd={handleDragEnd}
         >
+          {/* Grid */}
+          <div 
+            className="absolute inset-0 grid pointer-events-none" 
+            style={{ 
+              gridTemplateColumns: `repeat(${cols}, 1fr)`,
+              gridTemplateRows: `repeat(${rows}, 1fr)`
+            }}
+          >
+            {Array.from({ length: rows * cols }).map((_, i) => (
+              <div key={`grid-${i}`} className="border border-dashed border-gray-300" />
+            ))}
+          </div>
+          
           {pieces.map((piece) => (
             <div
               key={piece.id}

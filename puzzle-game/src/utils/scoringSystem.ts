@@ -1,4 +1,3 @@
-
 export interface ScoringConfig {
     maxPoints: number;
     timeLimit: number;
@@ -10,21 +9,21 @@ export interface ScoringConfig {
     maxPoints: number;
     timeLimit: number;
     percentage: number;
-    rank: 'Gold' | 'Silver' | 'Bronze' | 'None';
+    rank: 'zlata medalja' | 'srebrna medalja' | 'bronasta medalja' | 'Brez';
   }
   
-  // Calculate maximum points: MAX_POINTS = 100 × 2^(D - 1)
+  // izracun najvecjega stevila tock: MAX_POINTS = 100 × 2^(D - 1)
   export const calculateMaxPoints = (difficulty: number): number => {
     return 100 * Math.pow(2, difficulty - 1);
   };
   
-  // Calculate time limit: TIME_LIMIT = 10 + (N × M - 4) × 5
+  // izracun casovne omejitve: TIME_LIMIT = 10 + (N × M - 4) × 5
   export const calculateTimeLimit = (rows: number, cols: number): number => {
     const totalPieces = rows * cols;
     return 10 + (totalPieces - 4) * 5;
   };
   
-  // Calculate difficulty level based on grid size
+  // izracun stopnje zahtevnosti glede na velikost mreze
   export const calculateDifficulty = (rows: number, cols: number): number => {
     const totalPieces = rows * cols;
     if (totalPieces <= 4) return 1;  // 2×2
@@ -32,10 +31,10 @@ export interface ScoringConfig {
     if (totalPieces <= 9) return 3;  // 3×3
     if (totalPieces <= 12) return 4; // 3×4
     if (totalPieces <= 16) return 5; // 4×4
-    return 6; // 4×5 and above
+    return 6; // 4×5
   };
   
-  // Calculate points based on completion time
+  // izracun tock glede na cas resevanja
   export const calculateScore = (
     completionTime: number,
     rows: number,
@@ -55,17 +54,16 @@ export interface ScoringConfig {
       points = maxPoints * Math.exp(-k * timePenalty);
     }
     
-    // Round down to whole number
     points = Math.floor(points);
     
     const percentage = (points / maxPoints) * 100;
     
-    // Determine rank
-    let rank: 'Gold' | 'Silver' | 'Bronze' | 'None';
-    if (percentage >= 100) rank = 'Gold';
-    else if (percentage >= 60) rank = 'Silver';
-    else if (percentage >= 30) rank = 'Bronze';
-    else rank = 'None';
+    // rang
+    let rank: 'zlata medalja' | 'srebrna medalja' | 'bronasta medalja' | 'Brez';
+    if (percentage >= 100) rank = 'zlata medalja';
+    else if (percentage >= 60) rank = 'srebrna medalja';
+    else if (percentage >= 30) rank = 'bronasta medalja';
+    else rank = 'Brez';
     
     return {
       points,
@@ -76,7 +74,7 @@ export interface ScoringConfig {
     };
   };
   
-  // Get scoring configuration for a given difficulty
+  // nastavitev tockovanja za dano stopnjo zahtevnosti
   export const getScoringConfig = (rows: number, cols: number): ScoringConfig => {
     const difficulty = calculateDifficulty(rows, cols);
     const maxPoints = calculateMaxPoints(difficulty);

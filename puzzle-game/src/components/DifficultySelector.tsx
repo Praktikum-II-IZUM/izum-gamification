@@ -20,18 +20,18 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   onChange,
   className
 }) => {
-  // Always split into two rows with 3 items each
+  // vedno razdelimo na dve vrstici s po 3 elemente
   const firstRow = difficulties.slice(0, 3);
   const secondRow = difficulties.slice(3);
 
-  // Define colors for each difficulty level (blue to red gradient)
+  // definiraj barvne nivoje (gradient)
   const difficultyColors = [
-    'from-blue-400 to-blue-500',    // Easiest
+    'from-blue-400 to-blue-500',    // najlazji
     'from-blue-300 to-blue-400',
     'from-cyan-300 to-cyan-400',
     'from-amber-300 to-amber-400',
     'from-orange-400 to-orange-500',
-    'from-red-400 to-red-500'      // Hardest
+    'from-red-400 to-red-500'      // najteži
   ];
 
   const renderButtonRow = (difficulties: Difficulty[], isSecondRow = false) => (

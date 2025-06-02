@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -17,7 +16,7 @@ export const Timer: React.FC<TimerProps> = ({
 }) => {
   const [time, setTime] = useState(0);
 
-  // Use useCallback to memoize the callback and prevent unnecessary re-renders
+  // uporaba useCallback za memorizacijo funkcije in preprecevanje nepotrebnih posodobitev
   const handleTimeUpdate = useCallback((newTime: number) => {
     onTimeUpdate(newTime);
   }, [onTimeUpdate]);
@@ -29,7 +28,6 @@ export const Timer: React.FC<TimerProps> = ({
       interval = setInterval(() => {
         setTime(prevTime => {
           const newTime = prevTime + 1;
-          // Call the callback in the next tick to avoid state update during renderAdd commentMore actions
           setTimeout(() => handleTimeUpdate(newTime), 0);
           return newTime;
         });
@@ -64,10 +62,10 @@ export const Timer: React.FC<TimerProps> = ({
       "bg-blue-100 text-blue-700",
       className
     )}>
-      <div className="text-sm text-gray-600 mb-1">Čas</div>
+      <div className="text-sm text-gray-600 mb-1">Cas</div>
       <div className="text-xl">{formatTime(time)}</div>
       <div className="text-xs text-gray-500">
-        Meja: {formatTime(timeLimit)}
+        meja: {formatTime(timeLimit)}
       </div>
     </div>
   );

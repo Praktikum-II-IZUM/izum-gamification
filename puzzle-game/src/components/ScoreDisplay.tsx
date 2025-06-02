@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { ScoreResult } from '@/utils/scoringSystem';
@@ -30,18 +29,18 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
 
   const getRankColor = (rank: string) => {
     switch (rank) {
-      case 'Gold': return 'text-yellow-600 bg-yellow-50';
-      case 'Silver': return 'text-gray-600 bg-gray-50';
-      case 'Bronze': return 'text-amber-700 bg-amber-50';
+      case 'zlata medalja': return 'text-yellow-600 bg-yellow-50';
+      case 'srebrna medalja': return 'text-gray-600 bg-gray-50';
+      case 'bronasta medalja': return 'text-amber-700 bg-amber-50';
       default: return 'text-gray-500 bg-gray-50';
     }
   };
 
   const getRankEmoji = (rank: string) => {
     switch (rank) {
-      case 'Gold': return '🥇';
-      case 'Silver': return '🥈';
-      case 'Bronze': return '🥉';
+      case 'zlata medalja': return '🥇';
+      case 'srebrna medalja': return '🥈';
+      case 'bronasta medalja': return '🥉';
       default: return '📊';
     }
   };
@@ -56,7 +55,7 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
         </h3>
         <div className="text-4xl font-bold text-blue-600 mb-2">
           {scoreResult.points} točk
-          {isNewBest && <span className="text-xl text-green-500 ml-2">🎉 Novi rekord!</span>}
+          {isNewBest && <span className="text-xl text-green-500 ml-2">🎉 Nov rekord!</span>}
         </div>
         <div className="text-sm text-gray-600">
           od {scoreResult.maxPoints} možnih
@@ -64,15 +63,15 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="text-center">
-          <div className="text-sm text-gray-600">Čas rešitve</div>
-          <div className="text-lg font-semibold">{formatTime(completionTime)}</div>
-        </div>
-        <div className="text-center">
-          <div className="text-sm text-gray-600">Časovna meja</div>
-          <div className="text-lg font-semibold">{formatTime(scoreResult.timeLimit)}</div>
-        </div>
-      </div>
+  <div className="text-center">
+    <div className="text-sm text-gray-600">Čas rešitve</div>
+    <div className="text-lg font-bold text-gray-900">{formatTime(completionTime)}</div>
+  </div>
+  <div className="text-center">
+    <div className="text-sm text-gray-600">Časovna meja</div>
+    <div className="text-lg font-bold text-gray-900">{formatTime(scoreResult.timeLimit)}</div>
+  </div>
+</div>
 
       <div className="text-center mb-4">
         <div className={cn(
@@ -85,36 +84,36 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
         </div>
       </div>
 
-      {/* Statistics section */}
-      <div className="bg-gray-50 rounded-lg p-4 mt-4">
-        <h4 className="text-lg font-semibold text-gray-800 mb-3 text-center">
-          📊 Statistike za {rows}×{cols}
-        </h4>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="text-center">
-            <div className="text-gray-600">🏆 Najboljši</div>
-            <div className="font-semibold">{statistics.best} točk</div>
-          </div>
-          <div className="text-center">
-            <div className="text-gray-600">📈 Povprečje</div>
-            <div className="font-semibold">{statistics.average} točk</div>
-          </div>
-          <div className="text-center">
-            <div className="text-gray-600">🎮 Odigrane igre</div>
-            <div className="font-semibold">{statistics.totalGames}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-gray-600">⭐ Skupaj točk</div>
-            <div className="font-semibold">{totalPoints}</div>
-          </div>
-        </div>
-      </div>
+{/* statistike */}
+<div className="bg-white rounded-lg p-4 mt-4 border border-black shadow-sm">
+  <h4 className="text-lg font-bold text-black mb-3 text-center">
+    Statistike za {rows}×{cols}
+  </h4>
+  <div className="grid grid-cols-2 gap-4 text-sm">
+    <div className="text-center">
+      <div className="text-sm text-gray-600">Najboljši</div>
+      <div className="font-bold text-gray-900">{statistics.best} točk</div>
+    </div>
+    <div className="text-center">
+      <div className="text-sm text-gray-600">Povprečje</div>
+      <div className="font-bold text-gray-900">{statistics.average} točk</div>
+    </div>
+    <div className="text-center">
+      <div className="text-sm text-gray-600">Odigrane igre</div>
+      <div className="font-bold text-gray-900">{statistics.totalGames}</div>
+    </div>
+    <div className="text-center">
+      <div className="text-sm text-gray-600">Skupaj točk</div>
+      <div className="font-bold text-gray-900">{totalPoints}</div>
+    </div>
+  </div>
+</div>
 
-      {completionTime > scoreResult.timeLimit && (
-        <div className="text-center text-sm text-orange-600 bg-orange-50 p-2 rounded mt-4">
-          ⚠️ Čas je bil presežen za {completionTime - scoreResult.timeLimit}s
-        </div>
-      )}
+    {completionTime > scoreResult.timeLimit && (
+    <div className="text-center text-sm font-medium text-white bg-orange-600 p-2 rounded mt-4">
+        ⚠️ Čas je bil presežen za {completionTime - scoreResult.timeLimit}s
+    </div>
+    )}
     </div>
   );
 };

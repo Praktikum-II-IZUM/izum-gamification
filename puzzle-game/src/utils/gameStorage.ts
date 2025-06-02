@@ -1,10 +1,11 @@
+import { ScoreResult } from './scoringSystem';
 
 export interface GameResult {
     grid: string;
     time: number;
     points: number;
     maxPoints: number;
-    rank: string;
+    rank: ScoreResult['rank'];
     date: string;
   }
   
@@ -16,8 +17,8 @@ export interface GameResult {
   }
   
   export class GameStorage {
-    // Save a game result
-    static saveResult(rows: number, cols: number, time: number, points: number, maxPoints: number, rank: string): void {
+    // shrani rezultat igre
+    static saveResult(rows: number, cols: number, time: number, points: number, maxPoints: number, rank: ScoreResult['rank']): void {
       const result: GameResult = {
         grid: `${rows}x${cols}`,
         time,
@@ -27,26 +28,26 @@ export interface GameResult {
         date: new Date().toISOString()
       };
   
-      // Save to grid-specific results
+      // shrani med rezultate za to velikost mreze
       const key = `results_${rows}x${cols}`;
       const results = this.getResults(rows, cols);
       results.push(result);
       localStorage.setItem(key, JSON.stringify(results));
   
-      // Update total points
+      // posodobi skupno stevilo tock
       let totalPoints = parseInt(localStorage.getItem('totalPoints') || '0');
       totalPoints += points;
       localStorage.setItem('totalPoints', totalPoints.toString());
     }
   
-    // Get results for specific grid size
+    // pridobi rezultate za doloceno velikost mreze
     static getResults(rows: number, cols: number): GameResult[] {
       const key = `results_${rows}x${cols}`;
       const results = localStorage.getItem(key);
       return results ? JSON.parse(results) : [];
     }
   
-    // Get statistics for specific grid size
+    // pridobi statistiko za doloceno velikost mreze
     static getStatistics(rows: number, cols: number): GameStatistics {
       const results = this.getResults(rows, cols);
       
@@ -71,16 +72,16 @@ export interface GameResult {
       };
     }
   
-    // Get all total points across all games
+    // pridobi skupno stevilo tock vseh iger
     static getTotalPoints(): number {
       return parseInt(localStorage.getItem('totalPoints') || '0');
     }
   
-    // Get all results across all grid sizes
+    // pridobi vse rezultate vseh velikosti mreze
     static getAllResults(): GameResult[] {
       const allResults: GameResult[] = [];
       
-      // Check common grid sizes
+      // preveri pogoste velikosti mreze
       const gridSizes = [
         [2, 2], [2, 3], [3, 3], [3, 4], [4, 4], [4, 5]
       ];

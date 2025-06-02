@@ -2,7 +2,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { ScoreResult } from '@/utils/scoringSystem';
-import { GameStorage, GameStatistics } from '@/utils/gameStorage';
+import { GameStorage } from '@/utils/gameStorage';
 
 interface ScoreDisplayProps {
   scoreResult: ScoreResult;

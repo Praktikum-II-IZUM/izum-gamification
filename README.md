@@ -37,3 +37,9 @@ Aplikacija je razvita z uporabo sodobnih tehnologij in orodij:
   - Node.js
   - Docker za virtualizacijo
   - Git za različice kode
+ 
+
+### Legacy
+
+- **Vercel Deploy**: https://izum-gamification-delta.vercel.app/ (do 02/06/2025)
+

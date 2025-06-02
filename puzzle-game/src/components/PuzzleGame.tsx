@@ -303,7 +303,6 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
               ...piece,
               x: piece.correctX,
               y: piece.correctY,
-              rotation: 0,
               isCorrect: true
             };
           }
@@ -322,7 +321,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     
     setPieces(prev => prev.map(piece => {
       if (piece.id === id) {
-        return { ...piece, rotation: (piece.rotation + 90) % 360, isCorrect: false };
+        return { ...piece, rotation: piece.rotation + 90, isCorrect: false };
       }
       return piece;
     }));
@@ -341,7 +340,6 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
               ...piece,
               x: piece.correctX,
               y: piece.correctY,
-              rotation: 0,
               isCorrect: true
             };
           }

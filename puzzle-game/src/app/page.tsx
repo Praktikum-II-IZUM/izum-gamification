@@ -6,12 +6,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { PuzzleGame } from '@/components/PuzzleGame';
 import { BookInfo } from '@/components/BookInfo';
 import { DifficultySelector } from '@/components/DifficultySelector';
+import { ScoreDisplay } from '@/components/ScoreDisplay';
 import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useToast } from "@/components/ui/use-toast";
 // import slike from '../../db/essential_book_data.json';
+import { ScoreResult } from '@/utils/scoringSystem';
 import { db, collection, getDocs } from '../../db/firebase_client.js';
 
 type Difficulty = {
@@ -35,6 +37,8 @@ export default function Home() {
   const [gameCompleted, setGameCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(DIFFICULTIES[0]);
+  const [finalScore, setFinalScore] = useState<ScoreResult | null>(null);
+  const [completionTime, setCompletionTime] = useState(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
 
@@ -51,11 +55,13 @@ export default function Home() {
     });
   };
   
-  const handleGameComplete = () => {
+  const handleGameComplete = (scoreResult: ScoreResult, gameTime: number) => {
     setGameCompleted(true);
+    setFinalScore(scoreResult);
+    setCompletionTime(gameTime);
     toast({
       title: "Čestitamo!",
-      description: "Igra je končana! Čestitamo na uspehu!",
+      description: `Dosegil si ${scoreResult.points} točk in ${scoreResult.rank} rang!`,
     });
   };
   
@@ -190,7 +196,7 @@ export default function Home() {
                   <CardTitle className="text-center text-2xl text-green-800">Čestitke!</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <div className="flex justify-center">
                       <div className="relative group">
                         <img 
@@ -200,7 +206,15 @@ export default function Home() {
                         />
                       </div>
                     </div>
-                    <BookInfo book={currentBook} />
+                    <div className="space-y-4">
+                      {finalScore && (
+                        <ScoreDisplay 
+                          scoreResult={finalScore}
+                          completionTime={completionTime}
+                        />
+                      )}
+                      <BookInfo book={currentBook} />
+                    </div>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-wrap justify-center gap-4">

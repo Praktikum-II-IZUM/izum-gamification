@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
+import { Timer } from '@/components/Timer';
+import { getScoringConfig, calculateScore, ScoreResult } from '@/utils/scoringSystem';
 
 declare global {
   interface Window {
@@ -23,7 +25,7 @@ interface PuzzleGameProps {
   imageSrc: string;
   rows: number;
   cols: number;
-  onComplete: () => void;
+  onComplete: (scoreResult: ScoreResult, completionTime: number) => void;
 }
 
 export const PuzzleGame: React.FC<PuzzleGameProps> = ({ 
@@ -46,6 +48,10 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [showSolution, setShowSolution] = useState(false);
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
   const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
+  const [gameStartTime, setGameStartTime] = useState<number | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [gameTimer, setGameTimer] = useState(false);
+  const scoringConfig = getScoringConfig(rows, cols);
 
   // Zvočna animacija
   const playSuccessSound = () => {
@@ -96,6 +102,14 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     }
   };
 
+  // Start timer when game initializes
+  useEffect(() => {
+    if (pieces.length > 0 && !gameStartTime) {
+      setGameStartTime(Date.now());
+      setGameTimer(true);
+    }
+  }, [pieces, gameStartTime]);
+
   // Preveri, ali se je spremenilo število pravilno postavljenih kosov
   useEffect(() => {
     const currentlyCorrect = new Set(
@@ -112,9 +126,13 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     // Preveri, ali je uganka rešena
     if (pieces.length > 0 && pieces.every(piece => piece.isCorrect) && !isComplete) {
       setIsComplete(true);
-      onComplete();
+      setGameTimer(false);
+      
+      // Calculate final score
+      const scoreResult = calculateScore(currentTime, rows, cols);
+      onComplete(scoreResult, currentTime);
     }
-  }, [pieces]);
+  }, [pieces, currentTime, rows, cols, isComplete, correctPieces.size, onComplete]);
 
   // Load the image to get its natural dimensions
   useEffect(() => {
@@ -348,8 +366,27 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     setShowSolution(!showSolution);
   };
 
+  const handleTimeUpdate = (time: number) => {
+    setCurrentTime(time);
+  };
+
   return (
     <div className="flex flex-col items-center w-full gap-4">
+      {/* Timer and scoring info */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-md">
+        <Timer
+          isRunning={gameTimer}
+          onTimeUpdate={handleTimeUpdate}
+          timeLimit={scoringConfig.timeLimit}
+          className="flex-1"
+        />
+        <div className="text-center p-3 rounded-lg bg-green-100 text-green-700 font-semibold flex-1">
+          <div className="text-sm text-gray-600 mb-1">Maksimalno</div>
+          <div className="text-xl">{scoringConfig.maxPoints}</div>
+          <div className="text-xs text-gray-500">točk</div>
+        </div>
+      </div>
+      
       {/* Solution toggle button */}
       <Button 
         variant="outline" 

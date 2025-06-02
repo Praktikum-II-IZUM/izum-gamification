@@ -211,6 +211,8 @@ export default function Home() {
                         <ScoreDisplay 
                           scoreResult={finalScore}
                           completionTime={completionTime}
+                          rows={selectedDifficulty.rows}
+                          cols={selectedDifficulty.cols}
                         />
                       )}
                       <BookInfo book={currentBook} />

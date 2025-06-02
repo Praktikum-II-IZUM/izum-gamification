@@ -2,18 +2,26 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { ScoreResult } from '@/utils/scoringSystem';
+import { GameStorage, GameStatistics } from '@/utils/gameStorage';
 
 interface ScoreDisplayProps {
   scoreResult: ScoreResult;
   completionTime: number;
+  rows: number;
+  cols: number;
   className?: string;
 }
 
 export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
   scoreResult,
   completionTime,
+  rows,
+  cols,
   className
 }) => {
+  const statistics = GameStorage.getStatistics(rows, cols);
+  const totalPoints = GameStorage.getTotalPoints();
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -38,6 +46,8 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
     }
   };
 
+  const isNewBest = scoreResult.points > statistics.best;
+
   return (
     <div className={cn("bg-white rounded-lg p-6 shadow-lg border", className)}>
       <div className="text-center mb-4">
@@ -46,6 +56,7 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
         </h3>
         <div className="text-4xl font-bold text-blue-600 mb-2">
           {scoreResult.points} točk
+          {isNewBest && <span className="text-xl text-green-500 ml-2">🎉 Novi rekord!</span>}
         </div>
         <div className="text-sm text-gray-600">
           od {scoreResult.maxPoints} možnih
@@ -74,8 +85,33 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
         </div>
       </div>
 
+      {/* Statistics section */}
+      <div className="bg-gray-50 rounded-lg p-4 mt-4">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3 text-center">
+          📊 Statistike za {rows}×{cols}
+        </h4>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="text-center">
+            <div className="text-gray-600">🏆 Najboljši</div>
+            <div className="font-semibold">{statistics.best} točk</div>
+          </div>
+          <div className="text-center">
+            <div className="text-gray-600">📈 Povprečje</div>
+            <div className="font-semibold">{statistics.average} točk</div>
+          </div>
+          <div className="text-center">
+            <div className="text-gray-600">🎮 Odigrane igre</div>
+            <div className="font-semibold">{statistics.totalGames}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-gray-600">⭐ Skupaj točk</div>
+            <div className="font-semibold">{totalPoints}</div>
+          </div>
+        </div>
+      </div>
+
       {completionTime > scoreResult.timeLimit && (
-        <div className="text-center text-sm text-orange-600 bg-orange-50 p-2 rounded">
+        <div className="text-center text-sm text-orange-600 bg-orange-50 p-2 rounded mt-4">
           ⚠️ Čas je bil presežen za {completionTime - scoreResult.timeLimit}s
         </div>
       )}

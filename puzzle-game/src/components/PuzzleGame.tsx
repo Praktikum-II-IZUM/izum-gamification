@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ declare global {
     webkitAudioContext: typeof AudioContext;
   }
 }
+import { GameStorage } from '@/utils/gameStorage';
 
 interface PuzzlePiece {
   id: number;
@@ -52,6 +53,11 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [gameTimer, setGameTimer] = useState(false);
   const scoringConfig = getScoringConfig(rows, cols);
+
+  // Use useCallback to prevent unnecessary re-renders
+  const handleTimeUpdate = useCallback((time: number) => {
+    setCurrentTime(time);
+  }, []);
 
   // Zvočna animacija
   const playSuccessSound = () => {
@@ -128,8 +134,9 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       setIsComplete(true);
       setGameTimer(false);
       
-      // Calculate final score
+      // Calculate final score and save to localStorage
       const scoreResult = calculateScore(currentTime, rows, cols);
+      GameStorage.saveResult(rows, cols, currentTime, scoreResult.points, scoreResult.maxPoints, scoreResult.rank);
       onComplete(scoreResult, currentTime);
     }
   }, [pieces, currentTime, rows, cols, isComplete, correctPieces.size, onComplete]);
@@ -366,10 +373,6 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     setShowSolution(!showSolution);
   };
 
-  const handleTimeUpdate = (time: number) => {
-    setCurrentTime(time);
-  };
-
   return (
     <div className="flex flex-col items-center w-full gap-4">
       {/* Timer and scoring info */}
@@ -386,7 +389,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
           <div className="text-xs text-gray-500">točk</div>
         </div>
       </div>
-      
+
       {/* Solution toggle button */}
       <Button 
         variant="outline" 

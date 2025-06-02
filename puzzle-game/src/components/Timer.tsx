@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 
 interface TimerProps {
@@ -17,6 +17,11 @@ export const Timer: React.FC<TimerProps> = ({
 }) => {
   const [time, setTime] = useState(0);
 
+  // Use useCallback to memoize the callback and prevent unnecessary re-renders
+  const handleTimeUpdate = useCallback((newTime: number) => {
+    onTimeUpdate(newTime);
+  }, [onTimeUpdate]);
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
@@ -24,7 +29,8 @@ export const Timer: React.FC<TimerProps> = ({
       interval = setInterval(() => {
         setTime(prevTime => {
           const newTime = prevTime + 1;
-          onTimeUpdate(newTime);
+          // Call the callback in the next tick to avoid state update during renderAdd commentMore actions
+          setTimeout(() => handleTimeUpdate(newTime), 0);
           return newTime;
         });
       }, 1000);
@@ -33,7 +39,7 @@ export const Timer: React.FC<TimerProps> = ({
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, onTimeUpdate]);
+}, [isRunning, handleTimeUpdate]);
 
   useEffect(() => {
     if (!isRunning) {
@@ -52,8 +58,8 @@ export const Timer: React.FC<TimerProps> = ({
 
   return (
     <div className={cn(
-      "text-center p-3 rounded-lg font-mono text-lg font-semibold",
-      isOverLimit ? "bg-red-100 text-red-700" : 
+      "text-center p-3 rounded-lg font-mono text-lg font-semibold transition-all duration-300",
+      isOverLimit ? "bg-red-100 text-red-700 animate-pulse" : 
       warningZone ? "bg-yellow-100 text-yellow-700" : 
       "bg-blue-100 text-blue-700",
       className

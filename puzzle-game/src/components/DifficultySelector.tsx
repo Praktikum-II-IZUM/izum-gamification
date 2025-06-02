@@ -67,7 +67,7 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
 
   return (
     <div className={cn("w-full px-5 py-4 max-w-3xl mx-auto", className)}>
-      <p className="text-lg font-medium text-gray-600 mb-3 px-1">Težavnost</p>
+      <p className="text-lg font-medium text-gray-100 dark:text-gray-100 mb-3 px-1">Težavnost:</p>
       <div className="bg-[#EEEEEF] rounded-2xl p-2 w-full">
         {renderButtonRow(firstRow)}
         {secondRow.length > 0 && renderButtonRow(secondRow, true)}

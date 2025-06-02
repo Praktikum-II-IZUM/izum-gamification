@@ -12,7 +12,7 @@ export const BookInfo: React.FC<BookInfoProps> = ({ book }) => {
 
   return (
     <div className="flex flex-col space-y-4">
-      <h3 className="text-xl font-bold">{book.title}</h3>
+      <h3 className="text-xl font-bold dark:text-gray-900">{book.title}</h3>
       
       <div className="space-y-2">
         <div>

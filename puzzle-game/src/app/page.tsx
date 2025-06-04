@@ -61,7 +61,7 @@ export default function Home() {
     setCompletionTime(gameTime);
     toast({
       title: "Čestitamo!",
-      description: `Dosegil si ${scoreResult.points} točk in ${scoreResult.rank} rang!`,
+      description: `Dosegel si ${scoreResult.points} točk in ${scoreResult.rank} rang!`,
     });
   };
   
@@ -193,7 +193,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 opacity-60 z-0"></div>
               <div className="relative z-10">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-center text-2xl text-green-800">Čestitke!</CardTitle>
+                  <CardTitle className="text-center text-2xl text-green-800">Čestitke!🎉</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">

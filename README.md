@@ -1,45 +1,53 @@
-# Igrifikacija - naslovnice v COBISS Plus
+# Igrifikacija - Sestavljanka naslovnic
 
 ## Opis projekta
 
-Ta projekt je spletna aplikacija za igrifikacijo naslovnic knjig v COBISS Plus. Uporabnik izbere (otroško) naslovnico velikosti približno 700x1000 pikslov, ki jo program razreže v poenostavljene puzzle oblike (linije, poševne, kvadrati ali pravokotniki). Sestavljanka je nato naključno razporejena, premaknjena in zavrtena.
+Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus. Uporabnik lahko izbere naslovnico, ki se razreže na manjše kose, ki jih nato premika in vrti, da sestavi izvirno sliko. Aplikacija je prilagojena za uporabo na različnih napravah, vključno z namiznimi računalniki, tablicami in pametnimi telefoni.
 
-Uporabnik mora s premikanjem in vrtenjem puzzlov sestaviti originalno naslovnico, na računalniku z miško, na tablici in telefonu pa s prsti.
+## Glavne značilnosti
 
-## Lastnosti
+- **Več težavnostnih nivojev**:
+  - 2×2 (Zelo lahko)
+  - 2×3 (Lahko)
+  - 3×3 (Srednje)
+  - 3×4 (Težje)
+  - 4×4 (Težko)
+  - 4×5 (Zelo težko)
 
-- Različni tipi rezanja slike: linije, poševne, kvadrati, pravokotniki
-- Naključno razporejanje, premikanje in vrtenje puzzlov
-- Več težavnostnih nivojev: 2x2, 2x3, 3x3, 3x4, 4x4, 4x5
-- Nagrada za uspešno sestavljeno sliko (zvok, animacija)
-- Prilagojeno otrokom v šolah, lahko pa tudi odraslim
-- Spletna aplikacija, ki deluje na namiznih in mobilnih napravah
+- **Interaktivna igra**:
+  - Povleci in spusti funkcionalnost
+  - Vrtenje kosov s klikom/dotikom
+  - Samodejno prilagajanje velikosti glede na napravo
+  - Animirano obvestilo ob uspešni rešitvi
 
-## Namen
-
-Aplikacija je namenjena zabavi in učenju – uporabniki lahko ob iskanju knjig v COBISS Plus sestavljajo naslovnice in se pri tem igrajo.
+- **Sistem točkovanja**:
+  - Sledenje času reševanja
+  - Točke glede na težavnost in hitrost reševanja
+  - Shranjevanje najboljših rezultatov
 
 ## Tehnologije
 
-Aplikacija je razvita z uporabo sodobnih tehnologij in orodij:
-
-- **Frontend**: 
-  - Next.js (React framework)
+- **Frontend**:
+  - Next.js 13+ (React framework)
   - TypeScript
   - Tailwind CSS za oblikovanje
   - Radix UI komponente
+  - React Hook Form za upravljanje obrazcev
+  - Framer Motion za animacije
 
-- **Backend**:
+- **Backend & Shramba**:
+  - Firebase za shranjevanje podatkov
   - Next.js API Routes
-  - MongoDB za shranjevanje podatkov
 
 - **Orodja za razvoj**:
   - Node.js
   - Docker za virtualizacijo
   - Git za različice kode
+  - ESLint in Prettier za kakovost kode
  
 
 ### Legacy
 
-- **Vercel Deploy**: https://izum-gamification-delta.vercel.app/ (do 02/06/2025)
+- **Render deploy**: https://izum-gamification.onrender.com/
+- **Vercel deploy**: https://izum-gamification.vercel.app/
 

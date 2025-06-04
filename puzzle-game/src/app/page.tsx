@@ -188,8 +188,8 @@ export default function Home() {
             </CardFooter>
           </Card>
         ) : gameCompleted ? (
-          <div className="space-y-6">
-            <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full max-w-4xl">
+          <div className="w-full max-w-4xl my-auto">
+            <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 opacity-60 z-0"></div>
               <div className="relative z-10">
                 <CardHeader className="text-center">

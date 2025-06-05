@@ -6,12 +6,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { PuzzleGame } from '@/components/PuzzleGame';
 import { BookInfo } from '@/components/BookInfo';
 import { DifficultySelector } from '@/components/DifficultySelector';
+import { ScoreDisplay } from '@/components/ScoreDisplay';
 import { BookOpen } from 'lucide-react';
 import { BookCover } from '@/types/book';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useToast } from "@/components/ui/use-toast";
 // import slike from '../../db/essential_book_data.json';
+import { ScoreResult } from '@/utils/scoringSystem';
 import { db, collection, getDocs } from '../../db/firebase_client.js';
 
 type Difficulty = {
@@ -35,6 +37,8 @@ export default function Home() {
   const [gameCompleted, setGameCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(DIFFICULTIES[0]);
+  const [finalScore, setFinalScore] = useState<ScoreResult | null>(null);
+  const [completionTime, setCompletionTime] = useState(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
 
@@ -51,11 +55,13 @@ export default function Home() {
     });
   };
   
-  const handleGameComplete = () => {
+  const handleGameComplete = (scoreResult: ScoreResult, gameTime: number) => {
     setGameCompleted(true);
+    setFinalScore(scoreResult);
+    setCompletionTime(gameTime);
     toast({
       title: "Čestitamo!",
-      description: "Igra je končana! Čestitamo na uspehu!",
+      description: `Dosegel si ${scoreResult.points} točk in ${scoreResult.rank} rang!`,
     });
   };
   
@@ -104,7 +110,7 @@ export default function Home() {
         {!gameStarted ? (
           <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full max-w-4xl">
             <CardHeader>
-              <CardTitle className="text-center text-2xl">COBISS Puzzle</CardTitle>
+              <CardTitle className="text-center text-2xl text-gray-100 dark:text-gray-100">COBISS Puzzle</CardTitle>
             </CardHeader>
             <CardContent>
               {currentBook ? (
@@ -119,10 +125,10 @@ export default function Home() {
                   <div className="w-full max-w-md">
                     <div className="flex flex-col h-full">
                       <div className="min-h-[120px] mb-4">
-                        <h3 className="text-xl font-semibold mb-2 line-clamp-2" title={currentBook.title}>
+                        <h3 className="text-xl font-semibold mb-2 line-clamp-2 text-gray-100 dark:text-gray-100" title={currentBook.title}>
                           {currentBook.title}
                         </h3>
-                        <p className="text-gray-600 line-clamp-2" title={`Avtor: ${currentBook.author}`}>
+                        <p className="line-clamp-2 text-gray-100 dark:text-gray-100" title={`Avtor: ${currentBook.author}`}>
                           Avtor: {currentBook.author}
                         </p>
                       </div>
@@ -149,7 +155,7 @@ export default function Home() {
                               <Button 
                                 variant="outline" 
                                 onClick={loadRandomBook}
-                                className="bg-white hover:bg-gray-50 text-gray-800 border-gray-300 hover:border-gray-400 text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
+                                className="bg-white hover:bg-gray-300 text-gray-800 border-gray-300 hover:border-gray-400 text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
                                 size="lg"
                               >
                                 Nova knjiga
@@ -182,15 +188,15 @@ export default function Home() {
             </CardFooter>
           </Card>
         ) : gameCompleted ? (
-          <div className="space-y-6">
-            <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full max-w-4xl">
+          <div className="w-full max-w-4xl my-auto">
+            <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 opacity-60 z-0"></div>
               <div className="relative z-10">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-center text-2xl text-green-800">Čestitke!</CardTitle>
+                  <CardTitle className="text-center text-2xl text-green-800">Čestitke!🎉</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <div className="flex justify-center">
                       <div className="relative group">
                         <img 
@@ -200,13 +206,23 @@ export default function Home() {
                         />
                       </div>
                     </div>
-                    <BookInfo book={currentBook} />
+                    <div className="space-y-4">
+                      {finalScore && (
+                        <ScoreDisplay 
+                          scoreResult={finalScore}
+                          completionTime={completionTime}
+                          rows={selectedDifficulty.rows}
+                          cols={selectedDifficulty.cols}
+                        />
+                      )}
+                      <BookInfo book={currentBook} />
+                    </div>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-wrap justify-center gap-4">
                   <Button 
                     onClick={playAgain}
-                    className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:scale-105 transition-transform duration-300"
+                    className="bg-gradient-to-r text-gray-900 from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:scale-105 transition-transform duration-300"
                     size={isMobile ? "lg" : "default"}
                   >
                     Igraj ponovno
@@ -230,7 +246,7 @@ export default function Home() {
             <div className="w-full max-w-6xl mx-auto">
               <Card className="shadow-lg border border-gray-700 bg-gray-800 w-full">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-center text-2xl md:text-3xl">
+                  <CardTitle className="text-center text-2xl md:text-3xl text-gray-100 dark:text-gray-100">
                     {selectedDifficulty.cols}×{selectedDifficulty.rows} Puzzle
                   </CardTitle>
                 </CardHeader>
@@ -252,7 +268,7 @@ export default function Home() {
                   <Button 
                     variant="outline" 
                     onClick={playAgain}
-                    className="hover:scale-105 transition-transform duration-300 px-8 py-2 text-base md:text-lg"
+                    className="hover:scale-105 transition-transform duration-300 px-8 py-2 text-base md:text-lg dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 dark:border-gray-300"
                     size={isMobile ? "lg" : "default"}
                   >
                     Nazaj na izbiro težavnosti

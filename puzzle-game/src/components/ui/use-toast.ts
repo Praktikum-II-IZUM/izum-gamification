@@ -5,16 +5,16 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 2000 // 2 seconds
+const TOAST_REMOVE_DELAY = 2000 // 2 sekundi
 
-// Define the basic toast properties type
+// vrsta lastnosti obvestila
 export type Toast = {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
 }
 
-// Define the full toast type with internal properties
+// vrsto obvestila z notranjimi lastnostmi
 type ToasterToast = Toast & {
   id: string
   open?: boolean
@@ -88,13 +88,13 @@ export const reducer = (state: State, action: Action): State => {
       const newToast = {
         ...action.toast,
         id: action.toast.id || genId(),
-        open: true // Start with open: true for immediate display
+        open: true // zacetek z open: true za prikaz
       }
       
-      // Add to remove queue for auto-dismiss
+      // dodaj v vrsto za odstranitev za samodejno zapiranje
       addToRemoveQueue(newToast.id)
       
-      // Update state with new toast
+      // posodobi stanje z novim obvestilom
       return {
         ...state,
         toasts: [newToast, ...state.toasts].slice(0, TOAST_LIMIT),
@@ -109,13 +109,13 @@ export const reducer = (state: State, action: Action): State => {
       }
     
     case "DISMISS_TOAST":
-      // Clear any existing timeout for this toast
+      // pocisti obstoječi casovni zamik za to obvestilo
       if (toastTimeouts.has(action.toastId)) {
         clearTimeout(toastTimeouts.get(action.toastId))
         toastTimeouts.delete(action.toastId)
       }
       
-      // Set open to false first for animation
+      // nastavi open na false za animacijo
       const updatedState = {
         ...state,
         toasts: state.toasts.map((t) =>
@@ -123,15 +123,15 @@ export const reducer = (state: State, action: Action): State => {
         ),
       }
 
-      // Schedule removal after animation
+      // odstranitev po animaciji
       setTimeout(() => {
         dispatch({ type: "REMOVE_TOAST", toastId: action.toastId })
-      }, 300) // Match animation duration
+      }, 300) // ujemanje trajanja animacije
       
       return updatedState
 
     case "REMOVE_TOAST":
-      // Clean up timeout if it exists
+      // pocisti casovni zamik
       if (toastTimeouts.has(action.toastId)) {
         clearTimeout(toastTimeouts.get(action.toastId))
         toastTimeouts.delete(action.toastId)
@@ -188,7 +188,7 @@ function useToast() {
         listeners.splice(index, 1)
       }
     }
-  }, []) // Remove state dependency to avoid unnecessary re-renders
+  }, []) // odstrani odvisnost od stanja
 
   return {
     ...state,
@@ -197,7 +197,7 @@ function useToast() {
       if (toastId) {
         dispatch({ type: "DISMISS_TOAST", toastId })
       } else {
-        // If no toastId provided, dismiss all toasts
+        // ce ni id-ja obvestila, zapri vsa obvestila
         state.toasts.forEach(toast => {
           dispatch({ type: "DISMISS_TOAST", toastId: toast.id })
         })

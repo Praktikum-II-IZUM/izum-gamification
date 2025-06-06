@@ -51,7 +51,7 @@ export default function Home() {
     setGameCompleted(false);
     toast({
       title: "Nova igra",
-      description: `Nova igra začeta z težavnostjo: ${selectedDifficulty.label}`,
+      description: ` ${selectedDifficulty.label}`,
     });
   };
   
@@ -61,7 +61,7 @@ export default function Home() {
     setCompletionTime(gameTime);
     toast({
       title: "Čestitamo!",
-      description: `Dosegel si ${scoreResult.points} točk in ${scoreResult.rank} rang!`,
+      description: `${scoreResult.points} od ${scoreResult.maxPoints} točk`,
     });
   };
   
@@ -70,25 +70,44 @@ export default function Home() {
   }, []);
 
   const loadRandomBook = async () => {
+    const loadingTimeout = setTimeout(() => setLoading(true), 300);
     
-    const booksCollection = collection(db, 'books');
-    const snapshot = await getDocs(booksCollection);
-    const booksData = snapshot.docs.map(doc => doc.data());
-    console.log(booksData);
+    try {
+      const booksCollection = collection(db, 'books');
+      const snapshot = await getDocs(booksCollection);
+      
+      if (snapshot.empty) {
+        throw new Error('Ni najdenih knjig v bazi podatkov');
+      }
+      
+      const booksData = snapshot.docs.map(doc => doc.data());
+      const random = Math.floor(Math.random() * booksData.length);
+      const element = booksData[random];
+      
+      if (!element || !element.title || !element.author || !element.image_url) {
+        throw new Error('Neveljavni podatki knjige');
+      }
+      
+      const realBook: BookCover = {
+        title: element.title,
+        author: element.author,
+        coverUrl: element.image_url,
+        description: element.description || ''
+      };
 
-    const random = Math.floor(Math.random()*booksData.length);
-    const element = booksData[random];
-    const realBook: BookCover = {
-      title: element.title,
-      author: element.author,
-      coverUrl: element.image_url
-    };
-
-    setCurrentBook(realBook);
-    setGameStarted(false);
-    setGameCompleted(false);
-    setLoading(false);
-    console.log(`Loading: ${loading}`);
+      setCurrentBook(realBook);
+      setGameStarted(false);
+      setGameCompleted(false);
+    } catch (error) {
+      console.error('Napaka pri nalaganju knjige:', error);
+      toast({
+        title: 'Napaka',
+        description: 'Prišlo je do napake pri nalaganju knjige. Poskusite znova.'
+      });
+    } finally {
+      clearTimeout(loadingTimeout);
+      setLoading(false);
+    }
   };
 
   const playAgain = () => {
@@ -98,8 +117,11 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner size="lg" className="h-16 w-16" />
+      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+        <div className="text-center">
+          <LoadingSpinner size="lg" className="h-16 w-16 mx-auto mb-4 text-white" />
+          <p className="text-white text-lg">Nalagam knjigo...</p>
+        </div>
       </div>
     );
   }
@@ -119,7 +141,8 @@ export default function Home() {
                     <img
                       src={currentBook.coverUrl} 
                       alt={currentBook.title} 
-                      className="h-95 sm:h-120 object-contain rounded-md shadow-md hover:scale-105 transition-transform duration-300" 
+                      className="h-95 sm:h-120 object-contain rounded-md shadow-md transform-gpu will-change-transform transition-transform duration-200 ease-out hover:scale-105 cursor-pointer" 
+                      onClick={() => currentBook.cobissUrl && window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer')}
                     />
                   </div>
                   <div className="w-full max-w-md">

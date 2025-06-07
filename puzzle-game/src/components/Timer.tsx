@@ -65,7 +65,7 @@ export const Timer: React.FC<TimerProps> = ({
       <div className="text-sm text-gray-600 mb-1">Čas</div>
       <div className="text-xl">{formatTime(time)}</div>
       <div className="text-xs text-gray-500">
-        meja: {formatTime(timeLimit)}
+        Meja: {formatTime(timeLimit)}
       </div>
     </div>
   );

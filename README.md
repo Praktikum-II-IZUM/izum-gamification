@@ -49,5 +49,5 @@ Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus.
 ### Legacy
 
 - **Render deploy**: https://izum-gamification.onrender.com/
-- **Vercel deploy**: https://izum-gamification.vercel.app/
+- **Vercel deploy**: https://izum-gamification-delta.vercel.app/
 

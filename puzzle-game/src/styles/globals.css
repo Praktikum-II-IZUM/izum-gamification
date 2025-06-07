@@ -59,3 +59,7 @@ body {
 .toast-exit-active {
   opacity: 0;
 }
+
+.puzzle-piece {
+  pointer-events: auto;
+}

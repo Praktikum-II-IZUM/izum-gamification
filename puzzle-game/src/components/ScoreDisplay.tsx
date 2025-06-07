@@ -41,7 +41,8 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
       case 'zlata medalja': return '🥇';
       case 'srebrna medalja': return '🥈';
       case 'bronasta medalja': return '🥉';
-      default: return '📊';
+      case 'Več sreče prihodnjič!': return '🍀';
+      default: return '🍀';
     }
   };
 

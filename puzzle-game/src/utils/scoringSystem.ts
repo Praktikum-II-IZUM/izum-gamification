@@ -9,7 +9,7 @@ export interface ScoringConfig {
     maxPoints: number;
     timeLimit: number;
     percentage: number;
-    rank: 'zlata medalja' | 'srebrna medalja' | 'bronasta medalja' | 'Brez';
+    rank: 'zlata medalja' | 'srebrna medalja' | 'bronasta medalja' | 'Več sreče prihodnjič!';
   }
   
   // izracun najvecjega stevila tock: MAX_POINTS = 100 × 2^(D - 1)
@@ -59,11 +59,11 @@ export interface ScoringConfig {
     const percentage = (points / maxPoints) * 100;
     
     // rang
-    let rank: 'zlata medalja' | 'srebrna medalja' | 'bronasta medalja' | 'Brez';
+    let rank: 'zlata medalja' | 'srebrna medalja' | 'bronasta medalja' | 'Več sreče prihodnjič!';
     if (percentage >= 100) rank = 'zlata medalja';
     else if (percentage >= 60) rank = 'srebrna medalja';
     else if (percentage >= 30) rank = 'bronasta medalja';
-    else rank = 'Brez';
+    else rank = 'Več sreče prihodnjič!';
     
     return {
       points,

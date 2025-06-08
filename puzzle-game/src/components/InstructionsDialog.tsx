@@ -27,7 +27,7 @@ export const InstructionsDialog: React.FC = () => {
       >
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-6 text-gray-100">
-            Navodila za igranje
+            Navodila za igro
           </DialogTitle>
         </DialogHeader>
         
@@ -92,6 +92,7 @@ export const InstructionsDialog: React.FC = () => {
                 <li><span className="font-semibold">Težavnost:</span> Večja težavnost = več točk</li>
                 <li><span className="font-semibold">Čas:</span> Če zaključite v časovni omejitvi, dobite največ točk</li>
                 <li><span className="font-semibold">Kazen za čas:</span> Po prekoračitvi časa se točke eksponentno zmanjšujejo</li>
+                <li><span className="font-semibold">Kazen za pomoč:</span> Uporaba rešitve zmanjša najvišje možno število točk na 60%</li>
               </ul>
               
               <div className="mt-4">
@@ -163,6 +164,17 @@ export const InstructionsDialog: React.FC = () => {
                     <p className="text-xs text-gray-400">
                       Za vsako sekundo čez časovno omejitev se točke eksponentno zmanjšajo.
                       Na primer: Če prekoračite čas za 10 sekund, boste prejeli približno 60% točk.
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                    <h4 className="font-semibold text-amber-300 mb-2">Kako deluje kazen za pomoč?</h4>
+                    <div className="bg-gray-900/50 p-3 rounded font-mono text-sm mb-2">
+                      Največ_točk = Originalne_točke × 0.6
+                    </div>
+                    <p className="text-xs text-gray-400">
+                      Če uporabite gumb &quot;Pokaži rešitev&quot;, se vaše najvišje možno število točk zmanjša na 60% prvotne vrednosti.
+                      Na primer: Če bi lahko prejeli 1000 točk, boste po uporabi pomoči lahko prejeli največ 600 točk.
                     </p>
                   </div>
                 </div>

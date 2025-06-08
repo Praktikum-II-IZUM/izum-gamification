@@ -47,12 +47,15 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [correctPieces, setCorrectPieces] = useState<Set<number>>(new Set());
   const isMobile = useIsMobile();
   const [showSolution, setShowSolution] = useState(false);
+  const [hasShownSolution, setHasShownSolution] = useState(false);
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
   const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
   const [gameStartTime, setGameStartTime] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [gameTimer, setGameTimer] = useState(false);
+  const [reducedMaxPoints, setReducedMaxPoints] = useState<number | null>(null);
   const scoringConfig = getScoringConfig(rows, cols);
+  const effectiveMaxPoints = reducedMaxPoints || scoringConfig.maxPoints;
 
   // uporaba useCallback za preprecevanje nepotrebnih ponovnih upodobitev
   const handleTimeUpdate = useCallback((time: number) => {
@@ -134,11 +137,18 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       setIsComplete(true);
       setGameTimer(false);
       
-      const scoreResult = calculateScore(currentTime, rows, cols);
-      GameStorage.saveResult(rows, cols, currentTime, scoreResult.points, scoreResult.maxPoints, scoreResult.rank);
+      const scoreResult = calculateScore(currentTime, rows, cols, hasShownSolution);
+      GameStorage.saveResult(
+        rows, 
+        cols, 
+        currentTime, 
+        scoreResult.points, 
+        scoreResult.originalMaxPoints, 
+        scoreResult.rank
+      );
       onComplete(scoreResult, currentTime);
     }
-  }, [pieces, currentTime, rows, cols, isComplete, correctPieces.size, onComplete]);
+  }, [pieces, currentTime, rows, cols, isComplete, correctPieces.size, onComplete, hasShownSolution]);
 
   // nalaganje slike za pridobitev njenih originalnih dimenzij
   useEffect(() => {
@@ -178,14 +188,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   }, [imageAspectRatio]);
 
   // inicializacija igre, ko so nastavljene dimenzije kontejnerja in je slika nalozena
-  useEffect(() => {
-    if (containerSize.width > 0 && imageLoaded) {
-      initGame();
-    }
-  }, [containerSize, imageLoaded, rows, cols]);
-
-  // inicializacija zacetek igre
-  const initGame = () => {
+  const initGame = useCallback(() => {
     if (!containerRef.current || containerSize.width === 0) return;
     
     const pieceWidth = containerSize.width / cols;
@@ -213,7 +216,13 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     
     setPieces(newPieces);
     setIsComplete(false);
-  };
+  }, [containerSize, cols, rows, imageAspectRatio, containerRef]);
+
+  useEffect(() => {
+    if (containerSize.width > 0 && imageLoaded) {
+      initGame();
+    }
+  }, [containerSize, imageLoaded, initGame]);
 
   // zacetek premik z misko
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, id: number) => {
@@ -367,23 +376,33 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
   // preklopi prikaz resitve
   const toggleSolution = () => {
-    setShowSolution(!showSolution);
+    const willShowSolution = !showSolution;
+    const usedSolution = willShowSolution && !hasShownSolution;
+    
+    if (usedSolution) {
+      setHasShownSolution(true);
+      // posodobi scoring ce uporabnik prikaze resitev
+      const newScoringConfig = getScoringConfig(rows, cols, true);
+      setReducedMaxPoints(newScoringConfig.maxPoints);
+    }
+    
+    setShowSolution(willShowSolution);
   };
 
   return (
     <div className="flex flex-col items-center w-full gap-4">
       {/* stoparica in tockovanje */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-md">
+      <div className="flex flex-row gap-2 sm:gap-4 items-stretch justify-center w-full max-w-md">
         <Timer
           isRunning={gameTimer}
           onTimeUpdate={handleTimeUpdate}
           timeLimit={scoringConfig.timeLimit}
-          className="flex-1"
+          className="flex-1 min-w-0"
         />
-        <div className="text-center p-3 rounded-lg bg-green-100 text-green-700 font-semibold flex-1">
-          <div className="text-sm text-gray-600 mb-1">Maksimalno</div>
-          <div className="text-xl">{scoringConfig.maxPoints}</div>
-          <div className="text-xs text-gray-500">tock</div>
+        <div className="text-center p-2 sm:p-3 rounded-lg bg-green-100 text-green-700 font-semibold flex-1 min-w-0 flex flex-col justify-center">
+          <div className="text-xs sm:text-sm text-gray-600">Maksimalno</div>
+          <div className="text-lg sm:text-xl font-bold">{effectiveMaxPoints}</div>
+          <div className="text-[10px] sm:text-xs text-gray-500">točk</div>
         </div>
       </div>
 
@@ -393,7 +412,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         onClick={toggleSolution}
         className="mb-2 hover:scale-105 transition-all duration-300 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 dark:border-gray-300"
       >
-        {showSolution ? 'Skrij resitev' : 'Prikazi resitev'}
+        {showSolution ? 'Skrij rešitev' : 'Prikaži rešitev'}
       </Button>
       
       <div className="relative" style={{

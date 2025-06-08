@@ -2,6 +2,7 @@ import { Button } from "./ui/button";
 import { BarChart3 } from "lucide-react";
 import { InstructionsDialog } from "./InstructionsDialog";
 import { Card, CardHeader, CardTitle } from "./ui/card";
+import { StatisticsDialog } from "./StatisticsDialog";
 
 export function AppHeader() {
   return (
@@ -15,18 +16,7 @@ export function AppHeader() {
             </div>
             <div className="flex gap-3 flex-shrink-0">
               <InstructionsDialog />
-              <Button 
-                variant="ghost" 
-                className="text-gray-400 hover:text-white hover:bg-gray-700 p-5 h-16 w-16 flex items-center justify-center rounded-full"
-                onClick={() => {
-                  alert('Informacije o aplikaciji bodo prikazane tukaj.');
-                }}
-              >
-                <BarChart3 
-                    className="h-6 w-6" 
-                    style={{ minWidth: '24px', minHeight: '24px' }} 
-                />
-              </Button>
+              <StatisticsDialog />
             </div>
           </div>
         </CardHeader>

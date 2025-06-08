@@ -173,7 +173,7 @@ const Page = () => {
           </button>
         </div> */}
         <div style={{color: 'red'}}>
-          <button>Sign Out</button>
+          <button onClick={handleSignOut}>Sign Out</button>
         </div>
         <AppHeader />
         {!gameStarted ? (

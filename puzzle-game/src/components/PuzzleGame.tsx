@@ -373,17 +373,17 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   return (
     <div className="flex flex-col items-center w-full gap-4">
       {/* stoparica in tockovanje */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-md">
+      <div className="flex flex-row gap-2 sm:gap-4 items-stretch justify-center w-full max-w-md">
         <Timer
           isRunning={gameTimer}
           onTimeUpdate={handleTimeUpdate}
           timeLimit={scoringConfig.timeLimit}
-          className="flex-1"
+          className="flex-1 min-w-0"
         />
-        <div className="text-center p-3 rounded-lg bg-green-100 text-green-700 font-semibold flex-1">
-          <div className="text-sm text-gray-600 mb-1">Maksimalno</div>
-          <div className="text-xl">{scoringConfig.maxPoints}</div>
-          <div className="text-xs text-gray-500">tock</div>
+        <div className="text-center p-2 sm:p-3 rounded-lg bg-green-100 text-green-700 font-semibold flex-1 min-w-0 flex flex-col justify-center">
+          <div className="text-xs sm:text-sm text-gray-600">Maksimalno</div>
+          <div className="text-lg sm:text-xl font-bold">{scoringConfig.maxPoints}</div>
+          <div className="text-[10px] sm:text-xs text-gray-500">točk</div>
         </div>
       </div>
 
@@ -393,7 +393,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         onClick={toggleSolution}
         className="mb-2 hover:scale-105 transition-all duration-300 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 dark:border-gray-300"
       >
-        {showSolution ? 'Skrij resitev' : 'Prikazi resitev'}
+        {showSolution ? 'Skrij resitev' : 'Prikaži resitev'}
       </Button>
       
       <div className="relative" style={{

@@ -11,7 +11,7 @@ export function AppHeader() {
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="min-w-0">
               <CardTitle className="text-3xl font-bold text-gray-100">COBISS Puzzle</CardTitle>
-              <p className="text-gray-300 mt-1">Sestavi puzzle in spoznaj slovensko literaturo</p>
+              <p className="text-gray-300 mt-1">Sestavi puzzle in spoznaj svetovno literaturo</p>
             </div>
             <div className="flex gap-3 flex-shrink-0">
               <InstructionsDialog />

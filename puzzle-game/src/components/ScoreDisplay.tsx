@@ -85,7 +85,7 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
   const isNewBest = scoreResult.points > statistics.best;
 
   return (
-    <div className={cn("bg-white rounded-lg p-6 shadow-lg border", className)}>
+    <div className={cn("bg-white rounded-lg p-6 shadow-lg", className)}>
       <div className="text-center mb-4">
         <h3 className="text-2xl font-bold text-gray-800 mb-2">
           Tvoj rezultat

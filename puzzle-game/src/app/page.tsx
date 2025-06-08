@@ -251,7 +251,7 @@ const Page = () => {
                     variant="secondary"
                     onClick={() => window.open(currentBook.cobissUrl, '_blank')}
                     size={isMobile ? "lg" : "default"}
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 bg-white text-gray-800 border-gray-300 hover:border-gray-400 hover:scale-105 transition-transform duration-200"
                   >
                     <BookOpen className="h-4 w-4" />
                     Odpri v COBISS Plus
@@ -316,7 +316,7 @@ const Page = () => {
                       variant="secondary"
                       onClick={() => window.open(currentBook.cobissUrl, '_blank')}
                       size={isMobile ? "lg" : "default"}
-                      className="hover:scale-105 transition-transform duration-300"
+                      className="bg-white text-gray-800 border-gray-300 hover:border-gray-400 hover:scale-105 transition-transform duration-200"
                     >
                       Odpri v COBISS Plus
                     </Button>

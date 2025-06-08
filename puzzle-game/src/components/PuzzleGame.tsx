@@ -47,12 +47,15 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const [correctPieces, setCorrectPieces] = useState<Set<number>>(new Set());
   const isMobile = useIsMobile();
   const [showSolution, setShowSolution] = useState(false);
+  const [hasShownSolution, setHasShownSolution] = useState(false);
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
   const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
   const [gameStartTime, setGameStartTime] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [gameTimer, setGameTimer] = useState(false);
+  const [reducedMaxPoints, setReducedMaxPoints] = useState<number | null>(null);
   const scoringConfig = getScoringConfig(rows, cols);
+  const effectiveMaxPoints = reducedMaxPoints || scoringConfig.maxPoints;
 
   // uporaba useCallback za preprecevanje nepotrebnih ponovnih upodobitev
   const handleTimeUpdate = useCallback((time: number) => {
@@ -134,11 +137,18 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       setIsComplete(true);
       setGameTimer(false);
       
-      const scoreResult = calculateScore(currentTime, rows, cols);
-      GameStorage.saveResult(rows, cols, currentTime, scoreResult.points, scoreResult.maxPoints, scoreResult.rank);
+      const scoreResult = calculateScore(currentTime, rows, cols, hasShownSolution);
+      GameStorage.saveResult(
+        rows, 
+        cols, 
+        currentTime, 
+        scoreResult.points, 
+        scoreResult.originalMaxPoints, 
+        scoreResult.rank
+      );
       onComplete(scoreResult, currentTime);
     }
-  }, [pieces, currentTime, rows, cols, isComplete, correctPieces.size, onComplete]);
+  }, [pieces, currentTime, rows, cols, isComplete, correctPieces.size, onComplete, hasShownSolution]);
 
   // nalaganje slike za pridobitev njenih originalnih dimenzij
   useEffect(() => {
@@ -367,7 +377,17 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
   // preklopi prikaz resitve
   const toggleSolution = () => {
-    setShowSolution(!showSolution);
+    const willShowSolution = !showSolution;
+    const usedSolution = willShowSolution && !hasShownSolution;
+    
+    if (usedSolution) {
+      setHasShownSolution(true);
+      // posodobi scoring ce uporabnik prikaze resitev
+      const newScoringConfig = getScoringConfig(rows, cols, true);
+      setReducedMaxPoints(newScoringConfig.maxPoints);
+    }
+    
+    setShowSolution(willShowSolution);
   };
 
   return (
@@ -382,7 +402,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         />
         <div className="text-center p-2 sm:p-3 rounded-lg bg-green-100 text-green-700 font-semibold flex-1 min-w-0 flex flex-col justify-center">
           <div className="text-xs sm:text-sm text-gray-600">Maksimalno</div>
-          <div className="text-lg sm:text-xl font-bold">{scoringConfig.maxPoints}</div>
+          <div className="text-lg sm:text-xl font-bold">{effectiveMaxPoints}</div>
           <div className="text-[10px] sm:text-xs text-gray-500">točk</div>
         </div>
       </div>

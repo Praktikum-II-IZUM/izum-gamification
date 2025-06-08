@@ -27,6 +27,8 @@ export default function Home() {
   const { currentUser } = useAuth();
   const [showSignUp, setShowSignUp] = useState(false);
 
+  console.log(currentUser);
+
   if (currentUser) {
     return <Page />;
   }
@@ -63,7 +65,7 @@ const Page = () => {
   const [completionTime, setCompletionTime] = useState(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
-  const { currentUser, setCurrentUser } = useAuth();
+  const { setCurrentUser } = useAuth();
 
   const handleSignOut = async () => {
     try {

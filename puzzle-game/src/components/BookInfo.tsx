@@ -1,7 +1,5 @@
 import React from 'react';
-import { Button } from "@/components/ui/button";
 import { BookCover } from '@/types/book';
-import { ExternalLink } from 'lucide-react';
 
 interface BookInfoProps {
   book: BookCover | null;

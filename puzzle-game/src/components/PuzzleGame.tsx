@@ -188,14 +188,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   }, [imageAspectRatio]);
 
   // inicializacija igre, ko so nastavljene dimenzije kontejnerja in je slika nalozena
-  useEffect(() => {
-    if (containerSize.width > 0 && imageLoaded) {
-      initGame();
-    }
-  }, [containerSize, imageLoaded, rows, cols]);
-
-  // inicializacija zacetek igre
-  const initGame = () => {
+  const initGame = useCallback(() => {
     if (!containerRef.current || containerSize.width === 0) return;
     
     const pieceWidth = containerSize.width / cols;
@@ -223,7 +216,13 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     
     setPieces(newPieces);
     setIsComplete(false);
-  };
+  }, [containerSize, cols, rows, imageAspectRatio, containerRef]);
+
+  useEffect(() => {
+    if (containerSize.width > 0 && imageLoaded) {
+      initGame();
+    }
+  }, [containerSize, imageLoaded, initGame]);
 
   // zacetek premik z misko
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, id: number) => {

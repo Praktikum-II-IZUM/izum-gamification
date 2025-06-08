@@ -173,7 +173,7 @@ export const InstructionsDialog: React.FC = () => {
                       Največ_točk = Originalne_točke × 0.6
                     </div>
                     <p className="text-xs text-gray-400">
-                      Če uporabite gumb "Pokaži rešitev", se vaše najvišje možno število točk zmanjša na 60% prvotne vrednosti.
+                      Če uporabite gumb &quot;Pokaži rešitev&quot;, se vaše najvišje možno število točk zmanjša na 60% prvotne vrednosti.
                       Na primer: Če bi lahko prejeli 1000 točk, boste po uporabi pomoči lahko prejeli največ 600 točk.
                     </p>
                   </div>

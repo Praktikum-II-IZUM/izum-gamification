@@ -1,7 +1,5 @@
-import { Button } from "./ui/button";
-import { BarChart3 } from "lucide-react";
-import { InstructionsDialog } from "./InstructionsDialog";
 import { Card, CardHeader, CardTitle } from "./ui/card";
+import { InstructionsDialog } from "./InstructionsDialog";
 import { StatisticsDialog } from "./StatisticsDialog";
 
 export function AppHeader() {

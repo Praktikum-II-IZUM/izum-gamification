@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 import { PuzzleGame } from '@/components/PuzzleGame';
 import { BookInfo } from '@/components/BookInfo';
 import { DifficultySelector } from '@/components/DifficultySelector';
@@ -66,11 +67,7 @@ export default function Home() {
     });
   };
   
-  useEffect(() => {
-    loadRandomBook();
-  }, []);
-
-  const loadRandomBook = async () => {
+  const loadRandomBook = useCallback(async () => {
     const loadingTimeout = setTimeout(() => setLoading(true), 300);
     
     try {
@@ -109,7 +106,11 @@ export default function Home() {
       clearTimeout(loadingTimeout);
       setLoading(false);
     }
-  };
+  }, [toast]);
+  
+  useEffect(() => {
+    loadRandomBook();
+  }, [loadRandomBook]);
 
   const playAgain = () => {
     setGameStarted(false);
@@ -138,12 +139,16 @@ export default function Home() {
                 {currentBook ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <div className="flex justify-center">
-                      <img
-                        src={currentBook.coverUrl} 
-                        alt={currentBook.title} 
-                        className="h-95 sm:h-120 object-contain rounded-md shadow-md transform-gpu will-change-transform transition-transform duration-200 ease-out hover:scale-105 cursor-pointer" 
-                        onClick={() => currentBook.cobissUrl && window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer')}
-                      />
+                      <div className="relative h-[380px] w-[250px] sm:h-[480px] sm:w-[316px]">
+                        <Image
+                          src={currentBook.coverUrl}
+                          alt={currentBook.title}
+                          fill
+                          className="object-contain rounded-md shadow-md transform-gpu will-change-transform transition-transform duration-200 ease-out hover:scale-105 cursor-pointer"
+                          onClick={() => currentBook.cobissUrl && window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer')}
+                          unoptimized={!currentBook.coverUrl.startsWith('/')}
+                        />
+                      </div>
                     </div>
                     <div className="w-full max-w-md">
                       <div className="flex flex-col h-full">
@@ -221,26 +226,37 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    <div className="flex justify-center">
-                      <div className="relative group">
-                        <img 
-                          src={currentBook?.coverUrl} 
-                          alt={currentBook?.title || "Knjiga"} 
-                          className="h-64 sm:h-72 object-contain rounded-md shadow-lg animate-[bounce_1s_ease-in-out] group-hover:scale-105 transition-transform duration-300" 
-                        />
+                    {currentBook ? (
+                      <>
+                        <div className="flex justify-center">
+                          <div className="relative h-[200px] w-[130px] sm:h-[250px] sm:w-[165px]">
+                            <Image
+                              src={currentBook.coverUrl}
+                              alt={currentBook.title}
+                              fill
+                              className="object-contain rounded-md shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer"
+                              onClick={() => currentBook.cobissUrl && window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer')}
+                              unoptimized={!currentBook.coverUrl.startsWith('/')}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          {finalScore && (
+                            <ScoreDisplay 
+                              scoreResult={finalScore}
+                              completionTime={completionTime}
+                              rows={selectedDifficulty.rows}
+                              cols={selectedDifficulty.cols}
+                            />
+                          )}
+                          <BookInfo book={currentBook} />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="col-span-2 text-center py-8">
+                        <p>Knjiga ni bila najdena. Poskusite znova.</p>
                       </div>
-                    </div>
-                    <div className="space-y-4">
-                      {finalScore && (
-                        <ScoreDisplay 
-                          scoreResult={finalScore}
-                          completionTime={completionTime}
-                          rows={selectedDifficulty.rows}
-                          cols={selectedDifficulty.cols}
-                        />
-                      )}
-                      <BookInfo book={currentBook} />
-                    </div>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-wrap justify-center gap-4">
@@ -267,7 +283,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="space-y-6 w-full max-w-6xl">
-            <Card className="shadow-lg border border-gray-700 bg-gray-800 w-full">
+            <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full">
               <CardHeader className="pb-2">
                 <CardTitle className="text-center text-2xl md:text-3xl text-gray-100 dark:text-gray-100">
                   {selectedDifficulty.cols}×{selectedDifficulty.rows} Puzzle

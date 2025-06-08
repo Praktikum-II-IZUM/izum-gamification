@@ -95,7 +95,7 @@ export const InstructionsDialog: React.FC = () => {
           {/* Točkovanje in medalje */}
           <div className="bg-gray-700/50 rounded-xl p-6 border border-amber-500/30">
             <h3 className="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
-              🏆 Točkovanje in medalje
+              Točkovanje in medalje
             </h3>
             <div className="space-y-4 text-gray-200">
               <p>Točke se prištevajo glede na:</p>

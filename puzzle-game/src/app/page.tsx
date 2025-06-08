@@ -150,6 +150,16 @@ const Page = () => {
     setGameCompleted(false);
   };
 
+  const openCobiss = useCallback((e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    if (currentBook?.cobissUrl) {
+      window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer');
+    }
+  }, [currentBook?.cobissUrl]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
@@ -172,15 +182,31 @@ const Page = () => {
                 {currentBook ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <div className="flex justify-center">
-                      <div className="relative h-[380px] w-[250px] sm:h-[480px] sm:w-[316px]">
+                      <div className="relative h-[380px] w-[250px] sm:h-[480px] sm:w-[316px] group overflow-hidden rounded-md">
                         <Image
                           src={currentBook.coverUrl}
                           alt={currentBook.title}
                           fill
-                          className="object-contain rounded-md shadow-md transform-gpu will-change-transform transition-transform duration-200 ease-out hover:scale-105 cursor-pointer"
-                          onClick={() => currentBook.cobissUrl && window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer')}
+                          className="object-cover rounded-md shadow-md transform-gpu will-change-transform transition-all duration-300 ease-out group-hover:scale-105 cursor-pointer"
+                          onClick={openCobiss}
                           unoptimized={!currentBook.coverUrl.startsWith('/')}
+                          loading="eager"
                         />
+                        {currentBook.cobissUrl && (
+                          <>
+                            <div 
+                              className="absolute bottom-3 right-3 bg-gray-800/90 hover:bg-gray-700/90 text-white px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer backdrop-blur-sm hover:backdrop-blur transition-all duration-200 flex items-center shadow-sm hover:shadow"
+                              onClick={openCobiss}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                              </svg>
+                              COBISS
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                     <div className="w-full max-w-md">
@@ -235,17 +261,7 @@ const Page = () => {
                 )}
               </CardContent>
               <CardFooter className="flex flex-wrap justify-center gap-4">
-                {currentBook?.cobissUrl && (
-                  <Button
-                    variant="secondary"
-                    onClick={() => window.open(currentBook.cobissUrl, '_blank')}
-                    size={isMobile ? "lg" : "default"}
-                    className="flex items-center gap-1 bg-white text-gray-800 border-gray-300 hover:border-gray-400 hover:scale-105 transition-transform duration-200"
-                  >
-                    <BookOpen className="h-4 w-4" />
-                    Odpri v COBISS Plus
-                  </Button>
-                )}
+                {/* Ostali gumbi, če obstajajo */}
               </CardFooter>
             </Card>
           </div>
@@ -302,12 +318,16 @@ const Page = () => {
                   </Button>
                   {currentBook?.cobissUrl && (
                     <Button
-                      variant="secondary"
                       onClick={() => window.open(currentBook.cobissUrl, '_blank')}
                       size={isMobile ? "lg" : "default"}
-                      className="bg-white text-gray-800 border-gray-300 hover:border-gray-400 hover:scale-105 transition-transform duration-200"
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-5 hover:scale-105 transition-transform duration-300 rounded-lg shadow-md flex items-center"
                     >
-                      Odpri v COBISS Plus
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                      Odpri v COBISS
                     </Button>
                   )}
                 </CardFooter>
@@ -315,7 +335,7 @@ const Page = () => {
             </Card>
           </div>
         ) : (
-          <div className="space-y-6 w-full max-w-6xl">
+          <div className="space-y-6 w-full max-w-4xl">
             <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full">
               <CardHeader className="pb-2">
                 <CardTitle className="text-center text-2xl md:text-3xl text-gray-100 dark:text-gray-100">

@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { BarChart3 } from 'lucide-react';
 import { GameStorage } from '@/utils/gameStorage';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface GameStats {
   level: string;
@@ -14,6 +15,7 @@ interface GameStats {
 }
 
 export const StatisticsDialog: React.FC = () => {
+  const isMobile = useIsMobile();
   const [stats, setStats] = useState({
     totalPoints: 0,
     totalGames: 0,
@@ -132,16 +134,24 @@ export const StatisticsDialog: React.FC = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button 
-          variant="ghost" 
-          className="text-gray-400 hover:text-white hover:bg-gray-700 p-5 h-16 w-16 flex items-center justify-center rounded-full"
-          aria-label="Prikaži statistiko"
-        >
-          <BarChart3 
-            className="h-6 w-6" 
-            style={{ minWidth: '24px', minHeight: '24px' }} 
-          />
-        </Button>
+        {isMobile ? (
+          <Button 
+            variant="ghost" 
+            className="text-gray-400 hover:text-white hover:bg-gray-700 p-4 h-16 flex items-center justify-center gap-2 rounded-full"
+            aria-label="Prikaži statistiko"
+          >
+            <BarChart3 className="h-5 w-5" />
+            <span className="text-sm">Statistika</span>
+          </Button>
+        ) : (
+          <Button 
+            variant="ghost" 
+            className="text-gray-400 hover:text-white hover:bg-gray-700 p-5 h-16 w-16 flex items-center justify-center rounded-full"
+            aria-label="Prikaži statistiko"
+          >
+            <BarChart3 className="h-6 w-6" style={{ minWidth: '24px', minHeight: '24px' }} />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent 
         className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-800 border-2 border-gray-700 shadow-xl text-gray-100

@@ -164,25 +164,7 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-gray-900 p-4">
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-2rem)]">
-        {/* <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md text-center">
-          <h2 className="text-2xl font-bold">Welcome {currentUser?.email}</h2>
-          <p>You are successfully signed in!</p>
-          <button
-            onClick={handleSignOut}
-            className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Sign Out
-          </button>
-        </div> */}
-        <div style={{color: 'red'}}>
-        <button 
-  onClick={handleSignOut}
-  className="absolute top-4 right-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
->
-  Sign Out
-</button>
-        </div>
-        <AppHeader />
+        <AppHeader onSignOut={handleSignOut} />
         {!gameStarted ? (
           <div className="w-full max-w-4xl">
             <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ScoreResult } from '@/utils/scoringSystem';
 import { GameStorage } from '@/utils/gameStorage';
@@ -19,7 +19,43 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
   className
 }) => {
   const statistics = GameStorage.getStatistics(rows, cols);
-  const totalPoints = GameStorage.getTotalPoints();
+  const [displayedPoints, setDisplayedPoints] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(true);
+
+  // Animacija za pristevanje tock k skupnim tockam
+  useEffect(() => {
+    const targetPoints = GameStorage.getTotalPoints();
+    const startPoints = targetPoints - scoreResult.points;
+    
+    if (startPoints >= 0) {
+      setDisplayedPoints(startPoints);
+      
+      const duration = 1500; 
+      const startTime = Date.now();
+      const endTime = startTime + duration;
+      
+      const animate = () => {
+        const now = Date.now();
+        const progress = Math.min((now - startTime) / duration, 1);
+        
+        const currentPoints = Math.floor(startPoints + (scoreResult.points * progress));
+        setDisplayedPoints(currentPoints);
+        
+        if (now < endTime) {
+          requestAnimationFrame(animate);
+        } else {
+          setDisplayedPoints(targetPoints);
+          setIsAnimating(false);
+        }
+      };
+      
+      const animationFrame = requestAnimationFrame(animate);
+      return () => cancelAnimationFrame(animationFrame);
+    } else {
+      setDisplayedPoints(targetPoints);
+      setIsAnimating(false);
+    }
+  }, [scoreResult.points]);
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -64,15 +100,15 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
-  <div className="text-center">
-    <div className="text-sm text-gray-600">Čas rešitve</div>
-    <div className="text-lg font-bold text-gray-900">{formatTime(completionTime)}</div>
-  </div>
-  <div className="text-center">
-    <div className="text-sm text-gray-600">Časovna meja</div>
-    <div className="text-lg font-bold text-gray-900">{formatTime(scoreResult.timeLimit)}</div>
-  </div>
-</div>
+        <div className="text-center">
+          <div className="text-sm text-gray-600">Čas rešitve</div>
+          <div className="text-lg font-bold text-gray-900">{formatTime(completionTime)}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm text-gray-600">Časovna meja</div>
+          <div className="text-lg font-bold text-gray-900">{formatTime(scoreResult.timeLimit)}</div>
+        </div>
+      </div>
 
       <div className="text-center mb-4">
         <div className={cn(
@@ -81,40 +117,46 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
         )}>
           <span className="text-2xl">{getRankEmoji(scoreResult.rank)}</span>
           <span>{scoreResult.rank}</span>
-          <span className="text-sm">({Math.round(scoreResult.percentage)}%)</span>
         </div>
       </div>
 
-{/* statistike */}
-<div className="bg-white rounded-lg p-4 mt-4 border border-black shadow-sm">
-  <h4 className="text-lg font-bold text-black mb-3 text-center">
-    Statistike za {rows}×{cols}
-  </h4>
-  <div className="grid grid-cols-2 gap-4 text-sm">
-    <div className="text-center">
-      <div className="text-sm text-gray-600">Najboljši</div>
-      <div className="font-bold text-gray-900">{statistics.best} točk</div>
-    </div>
-    <div className="text-center">
-      <div className="text-sm text-gray-600">Povprečje</div>
-      <div className="font-bold text-gray-900">{statistics.average} točk</div>
-    </div>
-    <div className="text-center">
-      <div className="text-sm text-gray-600">Odigrane igre</div>
-      <div className="font-bold text-gray-900">{statistics.totalGames}</div>
-    </div>
-    <div className="text-center">
-      <div className="text-sm text-gray-600">Skupaj točk</div>
-      <div className="font-bold text-gray-900">{totalPoints}</div>
-    </div>
-  </div>
-</div>
+      {/* statistike */}
+      <div className="bg-white rounded-lg p-4 mt-4 border border-black shadow-sm">
+        <h4 className="text-lg font-bold text-black mb-3 text-center">
+          Statistike za {rows}×{cols}
+        </h4>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="text-center">
+            <div className="text-sm text-gray-600">Najboljši</div>
+            <div className="font-bold text-gray-900">{statistics.best} točk</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-gray-600">Povprečje</div>
+            <div className="font-bold text-gray-900">{statistics.average} točk</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-gray-600">Odigrane igre</div>
+            <div className="font-bold text-gray-900">{statistics.totalGames}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-gray-600">Skupaj točk (vse igre)</div>
+            <div className="font-bold text-gray-900">
+              {displayedPoints.toLocaleString()}
+              {isAnimating && (
+                <span className="ml-2 text-green-600 animate-pulse">
+                  +{scoreResult.points}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
 
-    {completionTime > scoreResult.timeLimit && (
-    <div className="text-center text-sm font-medium text-white bg-orange-600 p-2 rounded mt-4">
-        ⚠️ Čas je bil presežen za {completionTime - scoreResult.timeLimit}s
-    </div>
-    )}
+      {completionTime > scoreResult.timeLimit && (
+        <div className="text-center text-sm font-medium text-white bg-orange-600 p-2 rounded mt-4">
+          ⚠️ Čas je bil presežen za {completionTime - scoreResult.timeLimit}s
+        </div>
+      )}
     </div>
   );
 };

@@ -15,7 +15,27 @@ import { useToast } from "@/components/ui/use-toast";
 import { AppHeader } from '@/components/AppHeader';
 // import slike from '../../db/essential_book_data.json';
 import { ScoreResult } from '@/utils/scoringSystem';
-import { db, collection, getDocs } from '../../db/firebase_client.js';
+import { db, collection, getDocs, auth } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
+import { signOut } from 'firebase/auth';
+
+import SignIn from './auth/SignIn';
+import SignUp from './auth/SignUp';
+
+export default function Home() {
+  const { currentUser } = useAuth();
+  const [showSignUp, setShowSignUp] = useState(false);
+
+  if (currentUser) {
+    return <Page />;
+  }
+
+  return showSignUp ? (
+    <SignUp onSwitchToSignIn={() => setShowSignUp(false)} />
+  ) : (
+    <SignIn onSwitchToSignUp={() => setShowSignUp(true)} />
+  );
+}
 
 type Difficulty = {
   cols: number;
@@ -32,7 +52,7 @@ const DIFFICULTIES: Difficulty[] = [
   { cols: 4, rows: 5, label: "4×5 (Zelo težko)" },
 ];
 
-export default function Home() {
+const Page = () => {
   const [currentBook, setCurrentBook] = useState<BookCover | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -42,6 +62,16 @@ export default function Home() {
   const [completionTime, setCompletionTime] = useState(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  const { currentUser, setCurrentUser } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      setCurrentUser(null);
+    } catch (error) {
+      console.error("Error signing out", error);
+    }
+  };
 
   const handleDifficultyChange = (difficulty: Difficulty) => {
     setSelectedDifficulty(difficulty);
@@ -55,7 +85,7 @@ export default function Home() {
       description: ` ${selectedDifficulty.label}`,
     });
   };
-  
+
   const handleGameComplete = (scoreResult: ScoreResult, gameTime: number) => {
     setGameCompleted(true);
     setFinalScore(scoreResult);
@@ -65,34 +95,35 @@ export default function Home() {
       description: `${scoreResult.points} od ${scoreResult.maxPoints} točk`,
     });
   };
-  
+
   useEffect(() => {
     loadRandomBook();
   }, []);
 
   const loadRandomBook = async () => {
     const loadingTimeout = setTimeout(() => setLoading(true), 300);
-    
+
     try {
       const booksCollection = collection(db, 'books');
       const snapshot = await getDocs(booksCollection);
-      
+
       if (snapshot.empty) {
         throw new Error('Ni najdenih knjig v bazi podatkov');
       }
-      
+
       const booksData = snapshot.docs.map(doc => doc.data());
       const random = Math.floor(Math.random() * booksData.length);
       const element = booksData[random];
-      
+
       if (!element || !element.title || !element.author || !element.image_url) {
         throw new Error('Neveljavni podatki knjige');
       }
-      
+
       const realBook: BookCover = {
         title: element.title,
         author: element.author,
         coverUrl: element.image_url,
+        cobissUrl: element.book_url,
         description: element.description || ''
       };
 
@@ -130,6 +161,19 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-900 p-4">
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-2rem)]">
+        {/* <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md text-center">
+          <h2 className="text-2xl font-bold">Welcome {currentUser?.email}</h2>
+          <p>You are successfully signed in!</p>
+          <button
+            onClick={handleSignOut}
+            className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Sign Out
+          </button>
+        </div> */}
+        <div style={{color: 'red'}}>
+          <button>Sign Out</button>
+        </div>
         <AppHeader />
         {!gameStarted ? (
           <div className="w-full max-w-4xl">
@@ -139,9 +183,9 @@ export default function Home() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <div className="flex justify-center">
                       <img
-                        src={currentBook.coverUrl} 
-                        alt={currentBook.title} 
-                        className="h-95 sm:h-120 object-contain rounded-md shadow-md transform-gpu will-change-transform transition-transform duration-200 ease-out hover:scale-105 cursor-pointer" 
+                        src={currentBook.coverUrl}
+                        alt={currentBook.title}
+                        className="h-95 sm:h-120 object-contain rounded-md shadow-md transform-gpu will-change-transform transition-transform duration-200 ease-out hover:scale-105 cursor-pointer"
                         onClick={() => currentBook.cobissUrl && window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer')}
                       />
                     </div>
@@ -158,7 +202,7 @@ export default function Home() {
                         <div className="flex-1 flex flex-col">
                           <div className="bg-inherit rounded-lg overflow-hidden max-w-[400px] mx-auto w-full">
                             <div className="pt-4">
-                              <DifficultySelector 
+                              <DifficultySelector
                                 difficulties={DIFFICULTIES}
                                 selected={selectedDifficulty}
                                 onChange={handleDifficultyChange}
@@ -167,16 +211,16 @@ export default function Home() {
                             </div>
                             <div className="pt-2">
                               <div className="flex flex-col sm:flex-row gap-3 w-full">
-                                <Button 
-                                  onClick={startGame} 
+                                <Button
+                                  onClick={startGame}
                                   disabled={!currentBook}
                                   className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
                                   size="lg"
                                 >
                                   Začni igro
                                 </Button>
-                                <Button 
-                                  variant="outline" 
+                                <Button
+                                  variant="outline"
                                   onClick={loadRandomBook}
                                   className="bg-white hover:bg-gray-300 text-gray-800 border-gray-300 hover:border-gray-400 text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
                                   size="lg"
@@ -198,7 +242,7 @@ export default function Home() {
               </CardContent>
               <CardFooter className="flex flex-wrap justify-center gap-4">
                 {currentBook?.cobissUrl && (
-                  <Button 
+                  <Button
                     variant="secondary"
                     onClick={() => window.open(currentBook.cobissUrl, '_blank')}
                     size={isMobile ? "lg" : "default"}
@@ -223,16 +267,16 @@ export default function Home() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <div className="flex justify-center">
                       <div className="relative group">
-                        <img 
-                          src={currentBook?.coverUrl} 
-                          alt={currentBook?.title || "Knjiga"} 
-                          className="h-64 sm:h-72 object-contain rounded-md shadow-lg animate-[bounce_1s_ease-in-out] group-hover:scale-105 transition-transform duration-300" 
+                        <img
+                          src={currentBook?.coverUrl}
+                          alt={currentBook?.title || "Knjiga"}
+                          className="h-64 sm:h-72 object-contain rounded-md shadow-lg animate-[bounce_1s_ease-in-out] group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                     </div>
                     <div className="space-y-4">
                       {finalScore && (
-                        <ScoreDisplay 
+                        <ScoreDisplay
                           scoreResult={finalScore}
                           completionTime={completionTime}
                           rows={selectedDifficulty.rows}
@@ -244,7 +288,7 @@ export default function Home() {
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-wrap justify-center gap-4">
-                  <Button 
+                  <Button
                     onClick={playAgain}
                     className="bg-gradient-to-r text-gray-900 from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:scale-105 transition-transform duration-300"
                     size={isMobile ? "lg" : "default"}
@@ -252,7 +296,7 @@ export default function Home() {
                     Igraj ponovno
                   </Button>
                   {currentBook?.cobissUrl && (
-                    <Button 
+                    <Button
                       variant="secondary"
                       onClick={() => window.open(currentBook.cobissUrl, '_blank')}
                       size={isMobile ? "lg" : "default"}
@@ -288,8 +332,8 @@ export default function Home() {
                 )}
               </CardContent>
               <CardFooter className="flex justify-center pb-6">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={playAgain}
                   className="hover:scale-105 transition-transform duration-300 px-8 py-2 text-base md:text-lg dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 dark:border-gray-300"
                   size={isMobile ? "lg" : "default"}

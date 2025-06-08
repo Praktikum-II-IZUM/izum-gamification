@@ -21,16 +21,9 @@ export const BookInfo: React.FC<BookInfoProps> = ({ book }) => {
         </div>
       </div>
       
-      {book.cobissUrl && (
+      {book.description && (
         <div className="pt-2">
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-2"
-            onClick={() => window.open(book.cobissUrl, '_blank')}
-          >
-            <span>Odpri v COBISS Plus</span>
-            <ExternalLink size={16} />
-          </Button>
+          <span className="text-gray-900">{book.description}</span>
         </div>
       )}
     </div>

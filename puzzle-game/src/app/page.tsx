@@ -212,6 +212,17 @@ const Page = () => {
                     <div className="w-full max-w-md">
                       <div className="flex-1 flex flex-col">
                         <div className="bg-inherit rounded-lg overflow-hidden max-w-[400px] mx-auto w-full">
+                          {/* info o knjigi */}
+                          {currentBook && (
+                            <div className="text-center mb-4">
+                              <h2 className="text-xl font-bold text-gray-100 mb-1 line-clamp-2">
+                                {currentBook.title}
+                              </h2>
+                              <p className="text-sm text-gray-300">
+                                {currentBook.author}
+                              </p>
+                            </div>
+                          )}
                           <div className="pt-4">
                             <DifficultySelector
                               difficulties={DIFFICULTIES}

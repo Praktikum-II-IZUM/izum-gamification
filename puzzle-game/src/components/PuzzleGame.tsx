@@ -424,7 +424,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         {/* ozadje s prikazom resitve */}
         {showSolution && (
           <div 
-            className="absolute inset-0 z-0"
+            className="absolute inset-0 z-0 rounded-md overflow-hidden"
             style={{
               backgroundImage: `url(${imageSrc})`,
               backgroundSize: 'contain',
@@ -441,7 +441,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
           ref={containerRef}
           className={cn(
             "relative w-full h-full rounded-md shadow-inner overflow-hidden touch-none",
-            showSolution ? 'bg-white/30' : 'bg-white/90',
+            showSolution ? 'bg-white/30' : 'bg-gray-800/50',
             !imageLoaded && 'invisible'
           )}
           onMouseMove={(e) => handleDragMove(e)}
@@ -452,14 +452,23 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         >
           {/* mreza */}
           <div 
-            className="absolute inset-0 grid pointer-events-none" 
+            className={cn(
+              "absolute inset-0 grid pointer-events-none",
+              showSolution ? 'rounded-md overflow-hidden' : ''
+            )} 
             style={{ 
               gridTemplateColumns: `repeat(${cols}, 1fr)`,
               gridTemplateRows: `repeat(${rows}, 1fr)`
             }}
           >
             {Array.from({ length: rows * cols }).map((_, i) => (
-              <div key={`grid-${i}`} className="border border-dashed border-gray-300" />
+              <div 
+                key={`grid-${i}`} 
+                className={cn(
+                  "border border-dashed",
+                  showSolution ? 'border-white/50' : 'border-gray-400/50'
+                )} 
+              />
             ))}
           </div>
           

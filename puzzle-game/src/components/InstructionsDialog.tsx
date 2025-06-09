@@ -2,21 +2,32 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { HelpCircle } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export const InstructionsDialog: React.FC = () => {
+  const isMobile = useIsMobile();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button 
-          variant="ghost" 
-          className="text-gray-400 hover:text-white hover:bg-gray-700 p-5 h-16 w-16 flex items-center justify-center rounded-full"
-          aria-label="Navodila za igro"
-        >
-          <HelpCircle 
-            className="h-6 w-6" 
-            style={{ minWidth: '24px', minHeight: '24px' }} 
-          />
-        </Button>
+        {isMobile ? (
+          <Button 
+            variant="ghost" 
+            className="text-gray-400 hover:text-white hover:bg-gray-700 p-4 h-16 flex items-center justify-center gap-2 rounded-full"
+            aria-label="Navodila za igro"
+          >
+            <HelpCircle className="h-5 w-5" />
+            <span className="text-sm">Navodila</span>
+          </Button>
+        ) : (
+          <Button 
+            variant="ghost" 
+            className="text-gray-400 hover:text-white hover:bg-gray-700 p-5 h-16 w-16 flex items-center justify-center rounded-full"
+            aria-label="Navodila za igro"
+          >
+            <HelpCircle className="h-6 w-6" style={{ minWidth: '24px', minHeight: '24px' }} />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent 
         className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-800 border-2 border-gray-700 shadow-xl text-gray-100
@@ -84,7 +95,7 @@ export const InstructionsDialog: React.FC = () => {
           {/* Točkovanje in medalje */}
           <div className="bg-gray-700/50 rounded-xl p-6 border border-amber-500/30">
             <h3 className="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
-              🏆 Točkovanje in medalje
+              Točkovanje in medalje
             </h3>
             <div className="space-y-4 text-gray-200">
               <p>Točke se prištevajo glede na:</p>

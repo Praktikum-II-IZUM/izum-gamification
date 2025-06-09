@@ -8,7 +8,7 @@ import { PuzzleGame } from '@/components/PuzzleGame';
 import { BookInfo } from '@/components/BookInfo';
 import { DifficultySelector } from '@/components/DifficultySelector';
 import { ScoreDisplay } from '@/components/ScoreDisplay';
-import { BookOpen } from 'lucide-react';
+
 import { BookCover } from '@/types/book';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
@@ -150,6 +150,16 @@ const Page = () => {
     setGameCompleted(false);
   };
 
+  const openCobiss = useCallback((e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    if (currentBook?.cobissUrl) {
+      window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer');
+    }
+  }, [currentBook?.cobissUrl]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
@@ -164,25 +174,7 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-gray-900 p-4">
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-2rem)]">
-        {/* <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md text-center">
-          <h2 className="text-2xl font-bold">Welcome {currentUser?.email}</h2>
-          <p>You are successfully signed in!</p>
-          <button
-            onClick={handleSignOut}
-            className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Sign Out
-          </button>
-        </div> */}
-        <div style={{color: 'red'}}>
-        <button 
-  onClick={handleSignOut}
-  className="absolute top-4 right-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
->
-  Sign Out
-</button>
-        </div>
-        <AppHeader />
+        <AppHeader onSignOut={handleSignOut} />
         {!gameStarted ? (
           <div className="w-full max-w-4xl">
             <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full">
@@ -190,56 +182,73 @@ const Page = () => {
                 {currentBook ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <div className="flex justify-center">
-                      <div className="relative h-[380px] w-[250px] sm:h-[480px] sm:w-[316px]">
+                      <div className="relative h-[380px] w-[250px] sm:h-[480px] sm:w-[316px] group overflow-hidden rounded-md">
                         <Image
                           src={currentBook.coverUrl}
                           alt={currentBook.title}
                           fill
-                          className="object-contain rounded-md shadow-md transform-gpu will-change-transform transition-transform duration-200 ease-out hover:scale-105 cursor-pointer"
-                          onClick={() => currentBook.cobissUrl && window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer')}
+                          className="object-cover rounded-md shadow-md transform-gpu will-change-transform transition-all duration-300 ease-out group-hover:scale-105 cursor-pointer"
+                          onClick={openCobiss}
                           unoptimized={!currentBook.coverUrl.startsWith('/')}
+                          loading="eager"
                         />
+                        {currentBook.cobissUrl && (
+                          <>
+                            <div 
+                              className="absolute bottom-3 right-3 bg-gray-800/90 hover:bg-gray-700/90 text-white px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer backdrop-blur-sm hover:backdrop-blur transition-all duration-200 flex items-center shadow-sm hover:shadow"
+                              onClick={openCobiss}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                              </svg>
+                              COBISS
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                     <div className="w-full max-w-md">
-                      <div className="flex flex-col h-full">
-                        <div className="min-h-[120px] mb-4">
-                          <h3 className="text-xl font-semibold mb-2 line-clamp-2 text-gray-100 dark:text-gray-100" title={currentBook.title}>
-                            {currentBook.title}
-                          </h3>
-                          <p className="line-clamp-2 text-gray-100 dark:text-gray-100" title={`Avtor: ${currentBook.author}`}>
-                            Avtor: {currentBook.author}
-                          </p>
-                        </div>
-                        <div className="flex-1 flex flex-col">
-                          <div className="bg-inherit rounded-lg overflow-hidden max-w-[400px] mx-auto w-full">
-                            <div className="pt-4">
-                              <DifficultySelector
-                                difficulties={DIFFICULTIES}
-                                selected={selectedDifficulty}
-                                onChange={handleDifficultyChange}
-                                className="w-full px-0"
-                              />
+                      <div className="flex-1 flex flex-col">
+                        <div className="bg-inherit rounded-lg overflow-hidden max-w-[400px] mx-auto w-full">
+                          {/* info o knjigi */}
+                          {currentBook && (
+                            <div className="text-center mb-4">
+                              <h2 className="text-xl font-bold text-gray-100 mb-1 line-clamp-2">
+                                {currentBook.title}
+                              </h2>
+                              <p className="text-sm text-gray-300">
+                                {currentBook.author}
+                              </p>
                             </div>
-                            <div className="pt-2">
-                              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                                <Button
-                                  onClick={startGame}
-                                  disabled={!currentBook}
-                                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
-                                  size="lg"
-                                >
-                                  Začni igro
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  onClick={loadRandomBook}
-                                  className="bg-white hover:bg-gray-300 text-gray-800 border-gray-300 hover:border-gray-400 text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
-                                  size="lg"
-                                >
-                                  Nova knjiga
-                                </Button>
-                              </div>
+                          )}
+                          <div className="pt-4">
+                            <DifficultySelector
+                              difficulties={DIFFICULTIES}
+                              selected={selectedDifficulty}
+                              onChange={handleDifficultyChange}
+                              className="w-full px-0"
+                            />
+                          </div>
+                          <div className="pt-2">
+                            <div className="flex flex-col sm:flex-row gap-3 w-full">
+                              <Button
+                                onClick={startGame}
+                                disabled={!currentBook}
+                                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
+                                size="lg"
+                              >
+                                Začni igro
+                              </Button>
+                              <Button
+                                variant="outline"
+                                onClick={loadRandomBook}
+                                className="bg-white hover:bg-gray-300 text-gray-800 border-gray-300 hover:border-gray-400 text-base py-5 flex-1 shadow-sm hover:shadow-md transition-all duration-200 ease-out font-medium tracking-wide rounded-xl"
+                                size="lg"
+                              >
+                                Nova knjiga
+                              </Button>
                             </div>
                           </div>
                         </div>
@@ -253,94 +262,97 @@ const Page = () => {
                 )}
               </CardContent>
               <CardFooter className="flex flex-wrap justify-center gap-4">
-                {currentBook?.cobissUrl && (
-                  <Button
-                    variant="secondary"
-                    onClick={() => window.open(currentBook.cobissUrl, '_blank')}
-                    size={isMobile ? "lg" : "default"}
-                    className="flex items-center gap-1 bg-white text-gray-800 border-gray-300 hover:border-gray-400 hover:scale-105 transition-transform duration-200"
-                  >
-                    <BookOpen className="h-4 w-4" />
-                    Odpri v COBISS Plus
-                  </Button>
-                )}
+                {/* Ostali gumbi, če obstajajo */}
               </CardFooter>
             </Card>
           </div>
         ) : gameCompleted ? (
           <div className="w-full max-w-4xl my-auto">
-            <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 relative overflow-hidden mt-6">
-              <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 opacity-60 z-0"></div>
-              <div className="relative z-10">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-center text-2xl text-green-800">Čestitke!🎉</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    {currentBook ? (
-                      <>
-                        <div className="flex justify-center">
-                          <div className="relative h-[200px] w-[130px] sm:h-[250px] sm:w-[165px]">
+            <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-center text-2xl md:text-3xl text-gray-100 flex items-center justify-center gap-2">
+                  <span className="text-2xl">🎉</span>
+                  Čestitke!
+                  <span className="text-2xl">🎉</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="py-6 px-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                  {currentBook ? (
+                    <>
+                      <div className="space-y-6 w-full">
+                        <div className="w-full flex justify-center">
+                          <div className="relative w-full max-w-[280px] aspect-[2/3] group overflow-hidden rounded-md">
                             <Image
                               src={currentBook.coverUrl}
                               alt={currentBook.title}
                               fill
-                              className="object-contain rounded-md shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer"
+                              className="object-cover rounded-md shadow-md transform-gpu will-change-transform transition-all duration-300 ease-out group-hover:scale-105 cursor-pointer"
                               onClick={() => currentBook.cobissUrl && window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer')}
                               unoptimized={!currentBook.coverUrl.startsWith('/')}
                             />
+                            {currentBook.cobissUrl && (
+                              <div 
+                                className="absolute bottom-3 right-3 bg-gray-800/90 hover:bg-gray-700/90 text-white px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer backdrop-blur-sm hover:backdrop-blur transition-all duration-200 flex items-center shadow-sm hover:shadow"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.open(currentBook.cobissUrl, '_blank', 'noopener,noreferrer');
+                                }}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                  <polyline points="15 3 21 3 21 9"></polyline>
+                                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                                </svg>
+                                COBISS
+                              </div>
+                            )}
                           </div>
                         </div>
-                        <div className="space-y-4">
-                          {finalScore && (
+                        <div className="bg-gray-700/50 rounded-lg p-4 border border-gray-600 text-gray-200 w-full">
+                          <BookInfo book={currentBook} />
+                        </div>
+                      </div>
+                      <div className="space-y-6">
+                        {finalScore && (
+                          <div className="bg-gray-700/50 rounded-lg p-0">
                             <ScoreDisplay 
                               scoreResult={finalScore}
                               completionTime={completionTime}
                               rows={selectedDifficulty.rows}
                               cols={selectedDifficulty.cols}
                             />
-                          )}
-                          <BookInfo book={currentBook} />
-                        </div>
-                      </>
-                    ) : (
-                      <div className="col-span-2 text-center py-8">
-                        <p>Knjiga ni bila najdena. Poskusite znova.</p>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-wrap justify-center gap-4">
-                  <Button
-                    onClick={playAgain}
-                    className="bg-gradient-to-r text-gray-900 from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:scale-105 transition-transform duration-300"
-                    size={isMobile ? "lg" : "default"}
-                  >
-                    Igraj ponovno
-                  </Button>
-                  {currentBook?.cobissUrl && (
-                    <Button
-                      variant="secondary"
-                      onClick={() => window.open(currentBook.cobissUrl, '_blank')}
-                      size={isMobile ? "lg" : "default"}
-                      className="bg-white text-gray-800 border-gray-300 hover:border-gray-400 hover:scale-105 transition-transform duration-200"
-                    >
-                      Odpri v COBISS Plus
-                    </Button>
+                    </>
+                  ) : (
+                    <div className="col-span-2 text-center py-8">
+                      <p className="text-red-400">Knjiga ni bila najdena. Poskusite znova.</p>
+                    </div>
                   )}
-                </CardFooter>
-              </div>
+                </div>
+              </CardContent>
+              <CardFooter className="flex flex-wrap justify-center gap-4 pb-6 px-6">
+                <Button
+                  onClick={playAgain}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-5 hover:scale-105 transition-transform duration-300 rounded-xl shadow-md w-full sm:w-auto justify-center text-base"
+                  size={isMobile ? "lg" : "default"}
+                >
+                  Igraj ponovno
+                </Button>
+              </CardFooter>
             </Card>
           </div>
         ) : (
-          <div className="space-y-6 w-full max-w-6xl">
+          <div className="space-y-6 w-full max-w-4xl">
             <Card className="shadow-lg border-2 border-gray-700 bg-gray-800 w-full">
-              <CardHeader className="pb-2">
+              <CardHeader className="pb-4">
                 <CardTitle className="text-center text-2xl md:text-3xl text-gray-100 dark:text-gray-100">
                   {selectedDifficulty.cols}×{selectedDifficulty.rows} Puzzle
                 </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0 px-4 md:px-8 pb-6">
+              <CardContent className="pt-2 px-4 md:px-8 pb-6">
                 {currentBook && (
                   <div className="flex justify-center w-full">
                     <div className="w-full max-w-[1400px]">

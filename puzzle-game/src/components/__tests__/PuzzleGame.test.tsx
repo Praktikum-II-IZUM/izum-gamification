@@ -14,6 +14,15 @@ import { render, screen } from '@testing-library/react';
 import { PuzzleGame } from '../PuzzleGame';
 import '@testing-library/jest-dom';
 
+declare global {
+    interface Window {
+      Image: {
+        prototype: HTMLImageElement;
+        new (): HTMLImageElement;
+      };
+    }
+  }
+
 const mockOnComplete = jest.fn();
 
 jest.mock('@/utils/gameStorage', () => ({
@@ -40,18 +49,35 @@ jest.mock('@/utils/scoringSystem', () => ({
   })),
 }));
 
-class MockImage {
-  constructor() {
-    setTimeout(() => {
-      this.onload();
-    }, 0);
+class MockImage implements Partial<HTMLImageElement> {
+    onload: () => void = () => {};
+    onerror: (() => void) | null = null;
+    src = '';
+    width = 600;
+    height = 600;
+    complete = false;
+    currentSrc = '';
+    decoding = 'auto' as const;
+    isMap = false;
+    loading = 'eager' as const;
+    naturalHeight = 0;
+    naturalWidth = 0;
+    referrerPolicy = '';
+    sizes = '';
+    useMap = '';
+  
+    constructor() {
+      setTimeout(() => {
+        if (this.onload) {
+          this.onload();
+        }
+      }, 0);
+    }
+  
+    decode(): Promise<void> {
+      return Promise.resolve();
+    }
   }
-  onload() {}
-  onerror() {}
-  src = '';
-  width = 600;
-  height = 600;
-}
 
 describe('PuzzleGame Komponenta', () => {
   const defaultProps = {
@@ -63,8 +89,11 @@ describe('PuzzleGame Komponenta', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    global.Image = MockImage as any;
-  });
+    global.Image = MockImage as unknown as {
+        prototype: HTMLImageElement;
+        new (): HTMLImageElement;
+      };
+    });
 
   it('prikaže osnovne elemente igre', () => {
     render(<PuzzleGame {...defaultProps} />);

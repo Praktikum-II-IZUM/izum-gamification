@@ -45,7 +45,7 @@ export default function SignIn({ onSwitchToSignUp }: SignInProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center">Sign In</h2>
+        <h2 className="text-2xl font-bold text-center">Vpiši se</h2>
         {error && <p className="text-red-500 text-center">{error}</p>}
         
         {/* Google Sign-In Button */}
@@ -57,7 +57,7 @@ export default function SignIn({ onSwitchToSignUp }: SignInProps) {
             <svg className="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
               <path fill="#EA4335" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
             </svg>
-            Sign in with Google
+            Vstopi z Google
           </button>
         </div>
 
@@ -66,7 +66,7 @@ export default function SignIn({ onSwitchToSignUp }: SignInProps) {
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+            <span className="px-2 bg-white text-gray-500">Nadaljuj z e-poštnim naslovom</span>
           </div>
         </div>
 
@@ -74,7 +74,7 @@ export default function SignIn({ onSwitchToSignUp }: SignInProps) {
           <div className="rounded-md shadow-sm space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                E-pošta
               </label>
               <input
                 id="email"
@@ -89,7 +89,7 @@ export default function SignIn({ onSwitchToSignUp }: SignInProps) {
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                Geslo
               </label>
               <input
                 id="password"
@@ -113,13 +113,13 @@ export default function SignIn({ onSwitchToSignUp }: SignInProps) {
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
+                Zapomni si me
               </label>
             </div>
 
             <div className="text-sm">
               <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Forgot your password?
+                Pozabljeno geslo?
               </a>
             </div>
           </div>
@@ -129,18 +129,18 @@ export default function SignIn({ onSwitchToSignUp }: SignInProps) {
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Sign In
+              Vpiši se
             </button>
           </div>
         </form>
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Don&apos;t have an account?{' '}
+            Nimate računa?{' '}
             <button 
               onClick={onSwitchToSignUp}
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Sign Up
+              Registriraj se
             </button>
           </p>
         </div>

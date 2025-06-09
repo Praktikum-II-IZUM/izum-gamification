@@ -13,12 +13,21 @@
 3. **Namestite odvisnosti**
     - Če uporabljate `npm`:
       ```bash
-      npm install
+      npm install --legacy-peer-deps
       ```
 
 4. **Nastavite okoljske spremenljivke**
-    - Ustvarite datoteko `.env` v korenski mapi projekta.
-    - Dodajte potrebne konfiguracije (primer: povezava do baze, API ključi).
+    - Ustvarite datoteko `.env.local` v korenski mapi projekta.
+    - Dodajte naslednje konfiguracije:
+    ```bash
+    NEXT_PUBLIC_FIREBASE_API_KEY=#api key
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=#auth domain
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID=#project id
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=#storage bucket
+    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=#messaging sender id
+    NEXT_PUBLIC_FIREBASE_APP_ID=#app id
+    MEASUREMENT_ID=#measurement id
+    ```
 
 5. **Zaženite razvojni strežnik**
     ```bash

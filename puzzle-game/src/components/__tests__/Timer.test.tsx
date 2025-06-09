@@ -5,7 +5,7 @@
  * - Prikaz začetnega časa (0:00)
  * - Pravilno štetje sekund, ko je časovnik aktiven
  * 
- * Uporabljajo se lažni časovniki (fake timers) za simulacijo preteka časa.
+ * Uporabljajo se lažni časovniki (fake timers) za simulacijo preteka časa
  */
 
 import React from 'react';

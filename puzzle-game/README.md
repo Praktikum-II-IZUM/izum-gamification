@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# COBISS Puzzle
 
-## Getting Started
+Interaktivna spletna aplikacija, kjer lahko sestavljate naslovnice knjig iz COBISS kataloga. Sestavite sestavljanko iz kosov naslovnic in spoznajte nove knjige. Igra vključuje izzivni časovni element z omejenim časom za reševanje, točkovanje, ki nagrajuje hitrejše reševanje, in podrobno statistiko.
 
-First, run the development server:
+## Vsebina
+
+- [Funkcionalnosti](#funkcionalnosti)
+- [Zahteve](#zahteve)
+- [Namestitev](#namestitev)
+- [Zaganjanje aplikacije](#zaganjanje-aplikacije)
+- [Navodila za uporabo](#navodila-za-uporabo)
+- [Sistem točkovanja](#sistem-točkovanja)
+- [Razvoj](#razvoj)
+- [Licenca](#licenca)
+
+## Funkcionalnosti
+
+- **Različne težavnostne stopnje** - izbira med različnimi velikostmi sestavljank (2×2 do 5×5)
+- **Sistemsko točkovanje** - več točk prejmete za hitrejše reševanje
+- **Rešitev na voljo** - možnost prikaza rešitve z zmanjšanjem možnih točk
+- **Statistika** - spremljanje vaših dosežkov in napredka
+- **Odzivni dizajn** - prilagojeno delovanje na vseh napravah
+- **Podpora za miško in dotik** - intuitivno vlečenje in spuščanje kosov
+
+## Zahteve
+
+- Node.js (v16.0.0 ali novejši)
+- npm (vključeno z Node.js)
+
+## Namestitev
+
+1. Klonirajte repozitorij:
+   ```bash
+   git clone [URL-repozitorija]
+   cd puzzle-game
+   ```
+
+2. Namestite odvisnosti:
+   ```bash
+   npm install
+   ```
+
+## Zaganjanje aplikacije
+
+Zaženite aplikacijo v razvojnem načinu:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Odprite [http://localhost:3000](http://localhost:3000) v vašem brskalniku.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Navodila za uporabo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Izberite želeno sliko in težavnostno stopnjo
+2. Povlecite in spustite kose na pravilno mesto
+3. Dvokliknite na kos za njegovo obračanje
+4. Na mobilnih napravah uporabite približevanje z dvema prstoma
+5. Gumb "Pokaži rešitev" je na voljo, vendar zmanjša končni rezultat
 
-## Learn More
+## Sistem točkovanja
 
-To learn more about Next.js, take a look at the following resources:
+- **Večja težavnost** pomeni več točk
+- **Hitrejše reševanje** prinaša več točk
+- **Časovna omejitev** se povečuje z velikostjo sestavljanke
+- **Uporaba pomoči** zmanjša najvišji možni rezultat
+- **Medalje** se podeljujejo glede na odstotek doseženih točk:
+  - 🥇 Zlata medalja: 100% točk
+  - 🥈 Srebrna medalja: 60-99% točk
+  - 🥉 Bronasta medalja: 30-59% točk
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Razvoj
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Prispevki so dobrodošli. Če imate predloge za izboljšave ali želite prijaviti napako, odprite nov "issue" ali pošljite "pull request".
 
-## Deploy on Vercel
+## Licenca
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Ta projekt je licenciran pod [MIT licenco](LICENSE).

@@ -151,12 +151,6 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
           </div>
         </div>
       </div>
-
-      {completionTime > scoreResult.timeLimit && (
-        <div className="text-center text-sm font-medium text-white bg-orange-600 p-2 rounded mt-4">
-          ⚠️ Čas je bil presežen za {completionTime - scoreResult.timeLimit}s
-        </div>
-      )}
     </div>
   );
 };

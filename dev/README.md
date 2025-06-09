@@ -15,6 +15,10 @@
       ```bash
       npm install --legacy-peer-deps
       ```
+      ali
+      ```bash
+      yarn install --legacy-peer-deps
+      ```
 
 4. **Nastavite okoljske spremenljivke**
     - Ustvarite datoteko `.env.local` v korenski mapi projekta.
@@ -33,9 +37,23 @@
     ```bash
     npm run dev
     ```
+    ali
+    ```bash
+    yarn dev
+    ```
 
-6. **Odprite aplikacijo**
+6. **Zagon z Dockerjem (izbirno)**
+    - Zgradite Docker sliko:
+      ```bash
+      docker compose up --build
+      ```
+
+7. **Odprite aplikacijo**
     - Obiščite [http://localhost:3000](http://localhost:3000) v vašem brskalniku.
 
-7. **Testiranje**
+8. **Testiranje**
     - Testiranje se lahko izvede z uporabo `npm test`.
+    ali
+    ```bash
+    yarn test
+    ```

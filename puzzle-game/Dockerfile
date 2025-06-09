@@ -11,7 +11,7 @@ COPY . .
 
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # Build the application
 RUN npm run build
@@ -28,7 +28,7 @@ COPY --from=builder /frontend/package*.json ./
 COPY --from=builder /frontend/next.config.ts ./
 
 # Install only production dependencies
-RUN npm ci --only=production
+RUN npm ci --only=production --legacy-peer-deps
 
 # Expose the port the app runs on
 EXPOSE 3000

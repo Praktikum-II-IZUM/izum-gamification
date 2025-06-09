@@ -41,6 +41,7 @@ Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus.
 
 - **Orodja za razvoj**:
   - Node.js
+  - Docker za virtualizacijo
   - Git za različice kode
   - ESLint in Prettier za kakovost kode
  

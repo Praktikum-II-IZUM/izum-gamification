@@ -1,1 +1,0 @@
-opis dokumentacije, ki se bo nahajala v mapi /docs

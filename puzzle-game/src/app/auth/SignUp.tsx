@@ -40,16 +40,13 @@ export default function SignUp({ onSwitchToSignIn }: SignUpProps) {
     try {
       const user = await signInWithGoogle();
       setCurrentUser(user);
-    } catch (err: any) {
+    } catch (error) {
       // ne prikazi napake, ce je uporabnik zaprl pop-up okno
-      if (err.code === 'auth/popup-closed-by-user') {
+      const firebaseError = error as { code?: string; message: string };
+      if (firebaseError.code === 'auth/popup-closed-by-user') {
         return;
       }
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Prijava z Google ni uspela. Poskusite znova.');
-      }
+      setError(firebaseError.message);
     }
   };
 

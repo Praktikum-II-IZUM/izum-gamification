@@ -8,7 +8,7 @@ import { PuzzleGame } from '@/components/PuzzleGame';
 import { BookInfo } from '@/components/BookInfo';
 import { DifficultySelector } from '@/components/DifficultySelector';
 import { ScoreDisplay } from '@/components/ScoreDisplay';
-import { BookOpen } from 'lucide-react';
+
 import { BookCover } from '@/types/book';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';

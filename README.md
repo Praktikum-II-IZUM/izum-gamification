@@ -41,13 +41,12 @@ Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus.
 
 - **Orodja za razvoj**:
   - Node.js
-  - Docker za virtualizacijo
   - Git za različice kode
   - ESLint in Prettier za kakovost kode
  
 
-### Legacy
+### Produkcija
 
-- **Render deploy**: https://izum-gamification.onrender.com/
-- **Vercel deploy**: https://izum-gamification-delta.vercel.app/
+- **Render**: https://izum-gamification.onrender.com/
+- **Vercel**: https://izum-gamification-delta.vercel.app/
 

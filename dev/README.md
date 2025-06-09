@@ -15,28 +15,18 @@
       ```bash
       npm install
       ```
-    - Če uporabljate `yarn`:
-      ```bash
-      yarn install
-      ```
 
 4. **Nastavite okoljske spremenljivke**
     - Ustvarite datoteko `.env` v korenski mapi projekta.
     - Dodajte potrebne konfiguracije (primer: povezava do baze, API ključi).
 
-5. **Zaženite Docker container**
-    ```bash
-    docker compose up --build
-    ```
-
-6. **Zaženite razvojni strežnik**
+5. **Zaženite razvojni strežnik**
     ```bash
     npm run dev
     ```
-    ali
-    ```bash
-    yarn dev
-    ```
 
-7. **Odprite aplikacijo**
+6. **Odprite aplikacijo**
     - Obiščite [http://localhost:3000](http://localhost:3000) v vašem brskalniku.
+
+7. **Testiranje**
+    - Testiranje se lahko izvede z uporabo `npm test`.

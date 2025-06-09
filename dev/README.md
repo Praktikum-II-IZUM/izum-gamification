@@ -24,7 +24,7 @@
     - Ustvarite datoteko `.env` v korenski mapi projekta.
     - Dodajte potrebne konfiguracije (primer: povezava do baze, API ključi).
 
-5. **Zagonite Docker container**
+5. **Zaženite Docker container**
     ```bash
     docker compose up --build
     ```

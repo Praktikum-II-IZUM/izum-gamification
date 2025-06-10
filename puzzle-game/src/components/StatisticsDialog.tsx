@@ -69,12 +69,11 @@ export const StatisticsDialog: React.FC = () => {
       <DialogTrigger asChild onClick={() => setIsDialogOpen(true)}>
         {isMobile ? (
           <Button 
-            variant="ghost"
-            className="text-gray-400 hover:text-white hover:bg-gray-700 p-4 h-16 flex items-center justify-center gap-2 rounded-full"
+            variant="ghost" 
+            className="text-gray-400 hover:text-white hover:bg-gray-700 p-5 h-16 w-16 flex items-center justify-center rounded-full"
             aria-label="Prikaži statistiko"
           >
-            <BarChart3 className="h-5 w-5" />
-            <span className="text-sm">Statistika</span>
+            <BarChart3 className="h-6 w-6" style={{ minWidth: '24px', minHeight: '24px' }} />
           </Button>
         ) : (
           <Button 

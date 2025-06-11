@@ -43,7 +43,7 @@
     ```
 
 6. **Zagon z Dockerjem (izbirno)**
-    - Zgradite Docker sliko:
+    - Zgradite Docker kontejner in sliko: 
       ```bash
       docker compose up --build
       ```
@@ -52,7 +52,11 @@
     - Obiščite [http://localhost:3000](http://localhost:3000) v vašem brskalniku.
 
 8. **Testiranje**
-    - Testiranje se lahko izvede z uporabo `npm test`.
+    - Testiranje se lahko izvede z uporabo `npm test`
+    ali 
+    ```bash
+    npm run test
+    ```
     ali
     ```bash
     yarn test

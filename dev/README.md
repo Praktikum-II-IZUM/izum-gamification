@@ -1,4 +1,4 @@
-## Navodila za zagon in vzpostavitev sistema
+## 🚀 Navodila za zagon in vzpostavitev sistema
 
 1. **Klonirajte repozitorij**
     ```bash
@@ -51,8 +51,11 @@
 7. **Odprite aplikacijo**
     - Obiščite [http://localhost:3000](http://localhost:3000) v vašem brskalniku.
 
-8. **Testiranje**
-    - Testiranje se lahko izvede z uporabo `npm test`
+8. 🧪 **Testiranje**
+    - Testiranje se lahko izvede z uporabo 
+    ```bash
+    npm test
+    ```
     ali 
     ```bash
     npm run test

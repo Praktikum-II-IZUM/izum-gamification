@@ -1,10 +1,10 @@
 # Igrifikacija - Sestavljanka naslovnic
 
-## Opis projekta
+## 📚 Opis projekta
 
 Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus. Uporabnik lahko izbere naslovnico, ki se razreže na manjše kose, ki jih nato premika in vrti, da sestavi izvirno sliko. Aplikacija je prilagojena za uporabo na različnih napravah, vključno z namiznimi računalniki, tablicami in pametnimi telefoni.
 
-## Glavne značilnosti
+## 🌟 Glavne značilnosti
 
 - **Več težavnostnih nivojev**:
   - 2×2 (Zelo lahko)
@@ -14,40 +14,51 @@ Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus.
   - 4×4 (Težko)
   - 4×5 (Zelo težko)
 
-- **Interaktivna igra**:
+- **🧩 Interaktivna igra**:
   - Povleci in spusti funkcionalnost
   - Vrtenje kosov s klikom/dotikom
   - Samodejno prilagajanje velikosti glede na napravo
-  - Animirano obvestilo ob uspešni rešitvi
+  - Animirano obvestilo in zvočni efekt ob uspešni rešitvi
+  - Možnost prikaza rešitve
+  - Skupna statistika
+  - Medalje za dobre rezultate
+  
+- **📊 Sistem točkovanja**:
+  - Točkovanje glede na: 
+    - Težavnost
+    - Čas reševanja
+    - Uporabo prikaza rešitve
+  - Shranjevanje preteklih rezultatov
+  
 
-- **Sistem točkovanja**:
-  - Sledenje času reševanja
-  - Točke glede na težavnost in hitrost reševanja
-  - Shranjevanje najboljših rezultatov
-
-## Tehnologije
+## 🛠 Tehnologije
 
 - **Frontend**:
-  - Next.js 13+ (React framework)
-  - TypeScript
-  - Tailwind CSS za oblikovanje
-  - Radix UI komponente
-  - React Hook Form za upravljanje obrazcev
-  - Framer Motion za animacije
+  - **Next.js** (React framework)
+  - **TypeScript** za tipsko varno kodo
+  - **Tailwind CSS** za stilizacijo
+  - **Framer Motion** za animacije
+  - **Radix UI** za dostopne komponente
 
 - **Backend & Shramba**:
-  - Firebase za shranjevanje podatkov
-  - Next.js API Routes
+  - **Firebase** za avtentikacijo in shranjevanje podatkov
+  - **Next.js API Routes** za strežniško logiko
+  - **LocalStorage** za lokalno shranjevanje statistike
 
 - **Orodja za razvoj**:
-  - Node.js
-  - Docker za virtualizacijo
-  - Git za različice kode
-  - ESLint in Prettier za kakovost kode
+  - **Node.js**
+  - **Jest** za testiranje
+  - **ESLint** in **Prettier** za kakovost kode
+  - **Git** za upravljanje različic
+  - **Docker** za virtualizacijo
  
 
-### Produkcija
+### 📦 Produkcija
 
 - **Render**: https://izum-gamification.onrender.com/
 - **Vercel**: https://izum-gamification-delta.vercel.app/
+
+## 📧 Kontakt
+
+Za vprašanja, sodelovanja ali prispevke nas kontaktirajte na: dev.puzzlegame@outlook.com
 

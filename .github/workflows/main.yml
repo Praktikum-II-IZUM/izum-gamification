@@ -26,6 +26,13 @@ jobs:
           cache: "npm"
           cache-dependency-path: "puzzle-game/package-lock.json"
 
+      - name: Install dependencies
+        run: npm ci
+        working-directory: puzzle-game
+
+      - name: Debug
+        run: echo "installed"
+
       - name: Write to puzzle-game/git.env
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
@@ -44,10 +51,6 @@ jobs:
           echo "NEXT_PUBLIC_FIREBASE_APP_ID=$NEXT_PUBLIC_FIREBASE_APP_ID" >> puzzle-game/git.env
           echo "MEASUREMENT_ID=$MEASUREMENT_ID" >> puzzle-game/git.env
           chmod 600 puzzle-game/git.env  # Lock down file permissions
-        working-directory: puzzle-game
-
-      - name: Install dependencies
-        run: npm ci
         working-directory: puzzle-game
 
       - name: Build Next.js app

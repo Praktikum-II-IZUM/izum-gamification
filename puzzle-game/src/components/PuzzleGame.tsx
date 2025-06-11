@@ -20,7 +20,22 @@ interface PuzzlePiece {
   correctY: number;
   rotation: number;
   isCorrect: boolean;
+  xA: number;
+  yA: number;
+  xB: number;
+  yB: number;
+  xC: number;
+  yC: number;
+  xD: number;
+  yD: number;
 }
+
+interface Axis {
+  id: number;
+  angle: number;
+  offSet: number;
+}
+
 
 interface PuzzleGameProps {
   imageSrc: string;
@@ -61,6 +76,33 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   const handleTimeUpdate = useCallback((time: number) => {
     setCurrentTime(time);
   }, []);
+  
+  const [axes] = useState(() => {
+    let xaxes: Axis[] = [];
+    let yaxes: Axis[] = [];
+    xaxes.push({
+      id: 0,
+      angle: 0,
+      offSet: 0
+    });
+    for (let i = 1; i < rows; i++) {
+      xaxes.push({
+        id: i,
+        angle: (Math.PI/6), //Math.asin(1 / (0.8 * 2 * rows)),
+        offSet: 0
+      });
+    }
+    xaxes.push({
+      id: rows,
+      angle: 0,
+      offSet: 0
+    });
+
+    return {
+      x: xaxes,
+      y: yaxes
+    }
+  });
 
   // zvocna animacija
   const playSuccessSound = () => {
@@ -188,8 +230,17 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
   }, [imageAspectRatio]);
 
   // inicializacija igre, ko so nastavljene dimenzije kontejnerja in je slika nalozena
+  useEffect(() => {
+    if (containerSize.width > 0 && imageLoaded) {
+      initGame();
+    }
+  }, [containerSize, imageLoaded, rows, cols]);
+
+  // inicializacija zacetek igre
   const initGame = useCallback(() => {
     if (!containerRef.current || containerSize.width === 0) return;
+
+    console.log(axes);
     
     const pieceWidth = containerSize.width / cols;
     const pieceHeight = pieceWidth * (1 / imageAspectRatio! * (cols / rows));
@@ -201,19 +252,36 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         const id = row * cols + col;
         const correctX = col * pieceWidth;
         const correctY = row * pieceHeight;
+
+        console.log(containerSize.width, pieceWidth, containerSize.width - pieceWidth);
+        console.log(containerSize.height, pieceHeight, containerSize.height - pieceHeight);
+        console.log("heyy");
         
         newPieces.push({
           id,
-          x: Math.random() * (containerSize.width - pieceWidth),
-          y: Math.random() * (containerSize.height - pieceHeight),
+          // x: Math.random() * (containerSize.width - pieceWidth),
+          // y: Math.random() * (containerSize.height - pieceHeight),
+          x: 0,
+          y: 0,
           correctX,
           correctY,
-          rotation: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
-          isCorrect: false
+          // rotation: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
+          rotation: 0,
+          isCorrect: false,
+          xA: correctX,
+          yA: correctY + Math.sin(axes.x[row].angle)* (correctX - axes.x[row].offSet),
+          xB: correctX + pieceWidth,
+          yB: correctY + Math.sin(axes.x[row].angle)* (correctX + pieceWidth - axes.x[row].offSet),
+          xC: correctX + pieceWidth,
+          yC: correctY + pieceHeight + Math.sin(axes.x[row+1].angle)* (correctX + pieceWidth - axes.x[row+1].offSet),
+          xD: correctX,
+          yD: correctY + pieceHeight + Math.sin(axes.x[row+1].angle)* (correctX - axes.x[row+1].offSet)
         });
       }
     }
     
+    console.log(newPieces);
+
     setPieces(newPieces);
     setIsComplete(false);
   }, [containerSize, cols, rows, imageAspectRatio, containerRef]);
@@ -226,7 +294,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
   // zacetek premik z misko
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>, id: number) => {
-    e.preventDefault();   
+    e.preventDefault(); // Dodano: preprečimo privzeto vedenje
     if (isRotating) return;
 
     const piece = pieces.find(p => p.id === id);
@@ -312,6 +380,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
               ...piece,
               x: piece.correctX,
               y: piece.correctY,
+              rotation: 0,
               isCorrect: true
             };
           }
@@ -349,6 +418,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
               ...piece,
               x: piece.correctX,
               y: piece.correctY,
+              rotation: 0,
               isCorrect: true
             };
           }
@@ -373,6 +443,16 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
       lastTapRef.current = { id, time: now };
     }
   };
+
+  const getVerticees = (piece: PuzzlePiece) => {
+    // console.log("\n Piece", piece.id);
+    // console.log(`polygon(${piece.xA} ${piece.yA}, ${piece.xB} ${piece.yB}, ${piece.xC} ${piece.yC}, ${piece.xD} ${piece.yD})`);
+    // console.log(`polygon(${piece.xA / containerSize.width*100}% ${piece.yA / containerSize.height*100}%, ${piece.xB / containerSize.width*100}% ${piece.yB / containerSize.height*100}%, ${piece.xC / containerSize.width*100}% ${piece.yC / containerSize.height*100}%, ${piece.xD / containerSize.width*100}% ${piece.yD / containerSize.height*100}%)`);
+    // return `polygon(${piece.xA} ${piece.yA}, ${piece.xB} ${piece.yB}, ${piece.xC} ${piece.yC}, ${piece.xD} ${piece.yD})`;
+    return `polygon(${piece.xA/containerSize.width*100}% ${piece.yA/containerSize.height*100}%, ${piece.xB/containerSize.width*100}% ${piece.yB/containerSize.height*100}%, ${piece.xC/containerSize.width*100}% ${piece.yC/containerSize.height*100}%, ${piece.xD/containerSize.width*100}% ${piece.yD/containerSize.height*100}%)`;
+    
+  }
+  
 
   // preklopi prikaz resitve
   const toggleSolution = () => {
@@ -480,12 +560,18 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
                 "transition-transform duration-300"
               )}
               style={{
-                width: `${pieceSize.width}px`,
-                height: `${pieceSize.height}px`,
-                left: `${piece.x}px`,
-                top: `${piece.y}px`,
+                // width: `${pieceSize.width}px`,
+                // height: `${pieceSize.height}px`,
+                width: `${containerSize.width}px`,
+                height: `${containerSize.height}px`,
+                // left: `${piece.x}px`,
+                // top: `${piece.y}px`,
+                left: '0px',
+                top: '0px',
                 zIndex: draggingPiece === piece.id ? 10 : 1,
                 transform: `rotate(${piece.rotation}deg)`,
+                // clipPath: 'polygon(0 0, 50% 0, 50% 50%, 0 50%)',
+                clipPath: getVerticees(piece),
                 touchAction: "none"
               }}
               onMouseDown={(e) => handleDragStart(e, piece.id)}
@@ -502,7 +588,8 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
                 )}
                 style={{
                   backgroundImage: `url(${imageSrc})`,
-                  backgroundSize: `${cols * 100}% ${rows * 100}%`,
+                  // backgroundSize: `${cols * 100}% ${rows * 100}%`,
+                  backgroundSize: `${100}% ${100}%`,
                   backgroundPosition: `${-piece.correctX / pieceSize.width * 100}% ${-piece.correctY / pieceSize.height * 100}%`,
                   boxShadow: piece.isCorrect ? 'none' : '0 2px 4px rgba(0,0,0,0.2)'
                 }}

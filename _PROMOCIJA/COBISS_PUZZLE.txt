@@ -1,0 +1,35 @@
+COBISS PUZZLE
+
+Sestavite knjižne sestavljanke in se zabavajte ob odkrivanju svetovne literature v okviru sistema COBISS.
+
+Leto izdelave: 2025
+
+Matija Čoh
+Aleš Fon Cafnik
+Miha Govedič
+
+Domača stran: https://izum-gamification-delta.vercel.app/
+Vir podatkov: https://plus.cobiss.net/cobiss/si/sl/bib/search
+
+Koda: https://github.com/Praktikum-II-IZUM/izum-gamification
+
+Kategorizacija: spletna aplikacija
+
+Oznake: ReactJS, NextJS, TypeScript, Vercel, Firebase, Python, Jupyter notebook, Google Colab, Scrum, AgilenRazvoj, GitHub
+
+OPIS PROJEKTA:
+
+COBISS PUZZLE je inovativna spletna aplikacija, ki združuje sestavljanje puzzlov s knjižno tematiko in raziskovanje literature iz sistema COBISS. 
+Vsaka sestavljanka prikazuje platnico dejanske knjige iz ene izmed osrednjih baz podatkov o knjižničnih gradivih v Sloveniji.
+
+Aplikacija uporabnikom ponuja možnost izbire med različnimi sestavljankami in stopnjami težavnosti, 
+kar omogoča prilagojeno uporabniško izkušnjo za vse starosti in ravni izkušenj.
+
+Projekt temelji na sodobnih tehnologijah: uporablja NextJS (z ogrodjem ReactJS) za spletni vmesnik 
+in strežniško logiko ter Firebase za shranjevanje podatkov.
+
+Cilj projekta je na igriv in interaktiven način približati bogato zakladnico knjižničnih virov širši javnosti ter spodbuditi zanimanje za branje. 
+Verjamemo, da lahko vsakdo ob takšni obliki igrifikacije odkrije knjigo, ki ga pritegne.
+
+Aplikacija je primerna tako za izobraževalne obiske knjižnic kot za domačo zabavo. Obenem spodbuja tekmovalnost, 
+radovednost in željo po pridobivanju znanja skozi odkrivanje vedno novih knjižnih naslovov.

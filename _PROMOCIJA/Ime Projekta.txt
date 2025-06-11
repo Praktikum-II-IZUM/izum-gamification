@@ -1,0 +1,21 @@
+Ime Projekta
+
+Kratek plot v eni vrstici, ki povzame bistvo rešitve
+
+Leto izdelave: 2022
+
+Avtor1 Priimek1
+Avtor2 Priimek2
+Avtor3 Priimek3
+Avtor4 Priimek4
+
+Domača stran: https://url.si/
+Vir podatkov: https://url.si/
+...
+Koda: https://git.com/projekt
+
+Kategorizacija: celovita informacijska rešitev, mobilna aplikacija, namizna aplikacija, spletna aplikacija, predstavitvena spletna stran
+
+Oznake: OdprtiPodatki, ReactJS, MongoDB, NodeJS, Python, Scrum, AgilenRazvoj, GitHub, UporabaAI, Express, Docker, Nginx, REST...
+
+Opis projekta v nekaj odstavkih / vrsticah (cca 150 besed)

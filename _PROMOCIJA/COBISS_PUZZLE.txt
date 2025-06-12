@@ -15,7 +15,7 @@ Koda: https://github.com/Praktikum-II-IZUM/izum-gamification
 
 Kategorizacija: spletna aplikacija
 
-Oznake: ReactJS, NextJS, TypeScript, Vercel, Firebase, Python, Jupyter notebook, Google Colab, Scrum, AgilenRazvoj, GitHub
+Oznake: React, NextJS, TypeScript, Vercel, Firebase, Python, Jupyter notebook, Google Colab, Scrum, Kanban, GitHub
 
 OPIS PROJEKTA:
 
@@ -25,8 +25,8 @@ Vsaka sestavljanka prikazuje platnico dejanske knjige iz ene izmed osrednjih baz
 Aplikacija uporabnikom ponuja možnost izbire med različnimi sestavljankami in stopnjami težavnosti, 
 kar omogoča prilagojeno uporabniško izkušnjo za vse starosti in ravni izkušenj.
 
-Projekt temelji na sodobnih tehnologijah: uporablja NextJS (z ogrodjem ReactJS) za spletni vmesnik 
-in strežniško logiko ter Firebase za shranjevanje podatkov.
+Projekt temelji na sodobnih tehnologijah: uporablja NextJS (z ogrodjem React) za spletni vmesnik 
+in strežniško logiko, Firebase za shranjevanje podatkov o knjigah ter LocalStorage za shranjevanje statistike.
 
 Cilj projekta je na igriv in interaktiven način približati bogato zakladnico knjižničnih virov širši javnosti ter spodbuditi zanimanje za branje. 
 Verjamemo, da lahko vsakdo ob takšni obliki igrifikacije odkrije knjigo, ki ga pritegne.

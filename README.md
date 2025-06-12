@@ -1,10 +1,10 @@
 # Igrifikacija - Sestavljanka naslovnic
 
-## 📚 Opis projekta
+## Opis projekta
 
 Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus. Uporabnik lahko izbere naslovnico, ki se razreže na manjše kose, ki jih nato premika in vrti, da sestavi izvirno sliko. Aplikacija je prilagojena za uporabo na različnih napravah, vključno z namiznimi računalniki, tablicami in pametnimi telefoni.
 
-## 🌟 Glavne značilnosti
+## Glavne značilnosti
 
 - **Več težavnostnih nivojev**:
   - 2×2 (Zelo lahko)
@@ -14,7 +14,7 @@ Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus.
   - 4×4 (Težko)
   - 4×5 (Zelo težko)
 
-- **🧩 Interaktivna igra**:
+- **Interaktivna igra**:
   - Povleci in spusti funkcionalnost
   - Vrtenje kosov s klikom/dotikom
   - Samodejno prilagajanje velikosti glede na napravo
@@ -23,7 +23,7 @@ Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus.
   - Skupna statistika
   - Medalje za dobre rezultate
   
-- **📊 Sistem točkovanja**:
+- **Sistem točkovanja**:
   - Točkovanje glede na: 
     - Težavnost
     - Čas reševanja
@@ -31,7 +31,7 @@ Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus.
   - Shranjevanje preteklih rezultatov
   
 
-## 🛠 Tehnologije
+## Tehnologije
 
 - **Frontend**:
   - **Next.js** (React framework)
@@ -53,12 +53,12 @@ Spletna aplikacija za sestavljanje sestavljank iz naslovnic knjig v COBISS Plus.
   - **Docker** za virtualizacijo
  
 
-### 📦 Produkcija
+### Produkcija
 
 - **Render**: https://izum-gamification.onrender.com/
 - **Vercel**: https://izum-gamification-delta.vercel.app/
 
-## 📧 Kontakt
+## Kontakt
 
 Za vprašanja, sodelovanja ali prispevke nas kontaktirajte na: dev.puzzlegame@outlook.com
 

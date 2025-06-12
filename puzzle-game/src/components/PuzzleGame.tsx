@@ -28,6 +28,13 @@ interface PuzzlePiece {
   yC: number;
   xD: number;
   yD: number;
+  poly_width?: number;
+  poly_height?: number;
+  xmin?: number;
+  xmax?: number;
+  ymin?: number;
+  ymax?: number;
+  polygon: string;
 }
 
 interface Axis {
@@ -88,7 +95,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     for (let i = 1; i < rows; i++) {
       xaxes.push({
         id: i,
-        angle: (Math.PI/6), //Math.asin(1 / (0.8 * 2 * rows)),
+        angle: (Math.PI/9), //Math.asin(1 / (0.8 * 2 * rows)),
         offSet: 0
       });
     }
@@ -256,26 +263,57 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
         console.log(containerSize.width, pieceWidth, containerSize.width - pieceWidth);
         console.log(containerSize.height, pieceHeight, containerSize.height - pieceHeight);
         console.log("heyy");
+
+        // local vars for logic
+        const xA = correctX;
+        const yA = correctY + Math.sin(axes.x[row].angle)* (correctX - axes.x[row].offSet);
+        const xB = correctX + pieceWidth;
+        const yB = correctY + Math.sin(axes.x[row].angle)* (correctX + pieceWidth - axes.x[row].offSet);
+        const xC = correctX + pieceWidth;
+        const yC = correctY + pieceHeight + Math.sin(axes.x[row+1].angle)* (correctX + pieceWidth - axes.x[row+1].offSet);
+        const xD = correctX;
+        const yD = correctY + pieceHeight + Math.sin(axes.x[row+1].angle)* (correctX - axes.x[row+1].offSet);
+
+        const xmin = Math.min(xA, xD);
+        const xmax = Math.max(xB, xC);
+        const ymin = Math.min(yA, yB);
+        const ymax = Math.max(yC, yD);
+        const poly_width = xmax - xmin;
+        const poly_height = ymax - ymin;
+
+        const rxa = 0;
+
         
         newPieces.push({
           id,
-          // x: Math.random() * (containerSize.width - pieceWidth),
-          // y: Math.random() * (containerSize.height - pieceHeight),
-          x: 0,
-          y: 0,
+          x: Math.random() * (containerSize.width - pieceWidth),
+          y: Math.random() * (containerSize.height - pieceHeight),
+          // x: 0,
+          // y: 0,
           correctX,
           correctY,
           // rotation: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
           rotation: 0,
           isCorrect: false,
-          xA: correctX,
-          yA: correctY + Math.sin(axes.x[row].angle)* (correctX - axes.x[row].offSet),
-          xB: correctX + pieceWidth,
-          yB: correctY + Math.sin(axes.x[row].angle)* (correctX + pieceWidth - axes.x[row].offSet),
-          xC: correctX + pieceWidth,
-          yC: correctY + pieceHeight + Math.sin(axes.x[row+1].angle)* (correctX + pieceWidth - axes.x[row+1].offSet),
-          xD: correctX,
-          yD: correctY + pieceHeight + Math.sin(axes.x[row+1].angle)* (correctX - axes.x[row+1].offSet)
+          xA: xA, 
+          yA: yA, 
+          xB: xB, 
+          yB: yB, 
+          xC: xC, 
+          yC: yC, 
+          xD: xD, 
+          yD: yD, 
+          poly_width: poly_width, 
+          poly_height: poly_height,
+          xmin: xmin,
+          xmax: xmax,
+          ymin: ymin,
+          ymax: ymax,
+          polygon: `polygon(
+          ${(xA-xmin)/poly_width*100}% ${(yA-ymin)/poly_height*100}%, 
+          ${(xB)/poly_width*100}% ${(yB-ymin)/poly_height*100}%, 
+          ${(xC)/poly_width*100}% ${(poly_height - ymax + yC)/poly_height*100}%, 
+          ${(xD-xmin)/poly_width*100}% ${(poly_height - ymax + yD)/poly_height*100}%)`
         });
       }
     }
@@ -449,8 +487,10 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
     // console.log(`polygon(${piece.xA} ${piece.yA}, ${piece.xB} ${piece.yB}, ${piece.xC} ${piece.yC}, ${piece.xD} ${piece.yD})`);
     // console.log(`polygon(${piece.xA / containerSize.width*100}% ${piece.yA / containerSize.height*100}%, ${piece.xB / containerSize.width*100}% ${piece.yB / containerSize.height*100}%, ${piece.xC / containerSize.width*100}% ${piece.yC / containerSize.height*100}%, ${piece.xD / containerSize.width*100}% ${piece.yD / containerSize.height*100}%)`);
     // return `polygon(${piece.xA} ${piece.yA}, ${piece.xB} ${piece.yB}, ${piece.xC} ${piece.yC}, ${piece.xD} ${piece.yD})`;
-    return `polygon(${piece.xA/containerSize.width*100}% ${piece.yA/containerSize.height*100}%, ${piece.xB/containerSize.width*100}% ${piece.yB/containerSize.height*100}%, ${piece.xC/containerSize.width*100}% ${piece.yC/containerSize.height*100}%, ${piece.xD/containerSize.width*100}% ${piece.yD/containerSize.height*100}%)`;
-    
+    // return `polygon(${piece.xA/containerSize.width*100}% ${piece.yA/containerSize.height*100}%, ${piece.xB/containerSize.width*100}% ${piece.yB/containerSize.height*100}%, ${piece.xC/containerSize.width*100}% ${piece.yC/containerSize.height*100}%, ${piece.xD/containerSize.width*100}% ${piece.yD/containerSize.height*100}%)`;
+    //return `polygon(${piece.xA}% ${piece.yA}%, ${piece.xB}% ${piece.yB}%, ${piece.xC}% ${piece.yC}%, ${piece.xD}% ${piece.yD}%)`;
+    // console.log(piece.polygon);
+    return piece.polygon;
   }
   
 
@@ -562,12 +602,14 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
               style={{
                 // width: `${pieceSize.width}px`,
                 // height: `${pieceSize.height}px`,
-                width: `${containerSize.width}px`,
-                height: `${containerSize.height}px`,
-                // left: `${piece.x}px`,
-                // top: `${piece.y}px`,
-                left: '0px',
-                top: '0px',
+                // width: `${containerSize.width}px`,
+                // height: `${containerSize.height}px`,
+                width: `${piece.poly_width}px`,
+                height: `${piece.poly_height}px`,
+                left: `${piece.x}px`,
+                top: `${piece.y}px`,
+                // left: '0px',
+                // top: '0px',
                 zIndex: draggingPiece === piece.id ? 10 : 1,
                 transform: `rotate(${piece.rotation}deg)`,
                 // clipPath: 'polygon(0 0, 50% 0, 50% 50%, 0 50%)',
@@ -588,8 +630,8 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
                 )}
                 style={{
                   backgroundImage: `url(${imageSrc})`,
-                  // backgroundSize: `${cols * 100}% ${rows * 100}%`,
-                  backgroundSize: `${100}% ${100}%`,
+                  backgroundSize: `${cols * 100}% ${rows * 100}%`,
+                  // backgroundSize: `${100}% ${100}%`,
                   backgroundPosition: `${-piece.correctX / pieceSize.width * 100}% ${-piece.correctY / pieceSize.height * 100}%`,
                   boxShadow: piece.isCorrect ? 'none' : '0 2px 4px rgba(0,0,0,0.2)'
                 }}

@@ -266,13 +266,13 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
 
         // local vars for logic
         const xA = correctX;
-        const yA = correctY + Math.sin(axes.x[row].angle)* (correctX - axes.x[row].offSet);
+        const yA = correctY + Math.tan(axes.x[row].angle)* (correctX - axes.x[row].offSet);
         const xB = correctX + pieceWidth;
-        const yB = correctY + Math.sin(axes.x[row].angle)* (correctX + pieceWidth - axes.x[row].offSet);
+        const yB = correctY + Math.tan(axes.x[row].angle)* (correctX + pieceWidth - axes.x[row].offSet);
         const xC = correctX + pieceWidth;
-        const yC = correctY + pieceHeight + Math.sin(axes.x[row+1].angle)* (correctX + pieceWidth - axes.x[row+1].offSet);
+        const yC = correctY + pieceHeight + Math.tan(axes.x[row+1].angle)* (correctX + pieceWidth - axes.x[row+1].offSet);
         const xD = correctX;
-        const yD = correctY + pieceHeight + Math.sin(axes.x[row+1].angle)* (correctX - axes.x[row+1].offSet);
+        const yD = correctY + pieceHeight + Math.tan(axes.x[row+1].angle)* (correctX - axes.x[row+1].offSet);
 
         const xmin = Math.min(xA, xD);
         const xmax = Math.max(xB, xC);
@@ -309,6 +309,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
           xmax: xmax,
           ymin: ymin,
           ymax: ymax,
+          // polygon: `polygon(${xA} ${yA}, ${xB} ${yB}, ${xC} ${yC}, ${xD} ${yD})`
           polygon: `polygon(
           ${(xA-xmin)/poly_width*100}% ${(yA-ymin)/poly_height*100}%, 
           ${(xB)/poly_width*100}% ${(yB-ymin)/poly_height*100}%, 
@@ -630,7 +631,7 @@ export const PuzzleGame: React.FC<PuzzleGameProps> = ({
                 )}
                 style={{
                   backgroundImage: `url(${imageSrc})`,
-                  backgroundSize: `${cols * 100}% ${rows * 100}%`,
+                  backgroundSize: (piece.poly_height && piece.poly_width) ? `${cols * 100 / piece.poly_width * pieceSize.width}% ${rows * 100 / piece.poly_height * pieceSize.height }%` : `${cols * 100 }% ${rows * 100}%`,
                   // backgroundSize: `${100}% ${100}%`,
                   backgroundPosition: `${-piece.correctX / pieceSize.width * 100}% ${-piece.correctY / pieceSize.height * 100}%`,
                   boxShadow: piece.isCorrect ? 'none' : '0 2px 4px rgba(0,0,0,0.2)'
